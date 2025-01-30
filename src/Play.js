@@ -15,14 +15,26 @@ class Play extends Phaser.Scene {
         this.load.image('ball', 'ball.png')
         this.load.image('wall', 'wall.png')
         this.load.image('oneway', 'one_way_wall.png')
+        this.load.image('car', 'car.png')
+        this.load.image('road', 'road.png')
     }
 
     create() {
-        
+        this.car = new Car(this, 0, 0)
+        this.worldTile = new WorldTile(this, '1')
+
+        WorldCamera.init(this)
+        WorldCamera.startFollow(this.car)
     }
 
-    update() {
+    update(time, dt) {
+        time /= 1000
+        dt /= 1000
+        this.matter.world.engine.timing.timeScale = dt
 
+
+        this.car.update(time, dt)
+        WorldCamera.update(time, dt)
     }
 }
 /*

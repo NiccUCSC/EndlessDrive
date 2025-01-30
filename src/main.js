@@ -15,6 +15,7 @@ let config = {
         default: 'matter',
         matter: {
             debug: true,
+            gravity: { x: 0, y: 0 }
         }
     },
     scene: [ Play ]
