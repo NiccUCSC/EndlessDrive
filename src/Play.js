@@ -18,11 +18,20 @@ class Play extends Phaser.Scene {
         this.load.image('oneway', 'one_way_wall.png')
         this.load.image('car', 'RedRaceCar.png')
         this.load.image('road', 'road.png')
+
+        this.load.image('tileset', 'TileMap1.png')
+        this.load.path = './assets/tiles/'
+        this.load.tilemapTiledJSON('tile_straight_road', 'StraightRoad.tmj')
+
+        this.load.tilemapTiledJSON('tileStraightRoad', 'StraightRoad01.tmj')
     }
 
     create() {
         this.car = new Car(this, 0, 0)
-        this.worldTile = new WorldTile(this, '1')
+        // this.worldTile = new WorldTile(this, '1')
+        const map = this.make.tilemap({key: "tileStraightRoad", tileWidth: 32, tileHeight: 32})
+        const tileset = map.addTilesetImage("Tileset01", "tileset", 16, 16, 1, 2)
+        const groundLayer = map.createLayer("ground", tileset)
 
         WorldCamera.init(this)
         WorldCamera.startFollow(this.car)

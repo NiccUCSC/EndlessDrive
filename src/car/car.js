@@ -15,7 +15,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
 
 
 
-        let fowardForce = World.upKey.isDown - 3 * World.downKey.isDown
+        let fowardForce = World.upKey.isDown - 3 * (speed > 2) * World.downKey.isDown
         let turnForce = (World.rightKey.isDown - World.leftKey.isDown)
         turnForce *= Math.min(speed / 12, 5)
 
