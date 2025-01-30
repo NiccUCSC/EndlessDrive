@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
     init() {
         // useful variables
         this.ballStartPos = [width/2, height - height/10]
+        World.init(this)
     }
 
     preload() {
@@ -15,7 +16,7 @@ class Play extends Phaser.Scene {
         this.load.image('ball', 'ball.png')
         this.load.image('wall', 'wall.png')
         this.load.image('oneway', 'one_way_wall.png')
-        this.load.image('car', 'car.png')
+        this.load.image('car', 'RedRaceCar.png')
         this.load.image('road', 'road.png')
     }
 
