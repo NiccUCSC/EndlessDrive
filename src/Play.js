@@ -24,14 +24,13 @@ class Play extends Phaser.Scene {
         this.load.tilemapTiledJSON('tile_straight_road', 'StraightRoad.tmj')
 
         this.load.tilemapTiledJSON('tileStraightRoad', 'StraightRoad01.tmj')
+        this.load.tilemapTiledJSON('tileIntersectionRoad', 'IntersectionRoad01.tmj')
     }
 
     create() {
         this.car = new Car(this, 0, 0)
-        // this.worldTile = new WorldTile(this, '1')
-        const map = this.make.tilemap({key: "tileStraightRoad", tileWidth: 32, tileHeight: 32})
-        const tileset = map.addTilesetImage("Tileset01", "tileset", 16, 16, 1, 2)
-        const groundLayer = map.createLayer("ground", tileset)
+        const tileA = new StraightTile(0, 0)
+        const tileB = new IntersectionTile(0, 1)
 
         WorldCamera.init(this)
         WorldCamera.startFollow(this.car)
@@ -40,7 +39,7 @@ class Play extends Phaser.Scene {
     update(time, dt) {
         time /= 1000
         dt /= 1000
-        this.matter.world.engine.timing.timeScale = dt
+        this.matter.world.engine.timing.timeScale = dt * World.TimeScale
 
 
         this.car.update(time, dt)

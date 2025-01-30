@@ -1,5 +1,5 @@
 class World {
-    
+    static TimeScale = 1
 
     static init(playScene) {
         World.PlayScene = playScene

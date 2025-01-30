@@ -13,14 +13,9 @@ class Car extends Phaser.Physics.Matter.Sprite {
     update(time, dt) {
         let speed = Math.sqrt(this.body.velocity.x**2 + this.body.velocity.y**2) / 16
 
-
-
         let fowardForce = World.upKey.isDown - 3 * (speed > 2) * World.downKey.isDown
         let turnForce = (World.rightKey.isDown - World.leftKey.isDown)
         turnForce *= Math.min(speed / 12, 5)
-
-        console.log(speed)
-
 
         let dir = [Math.cos(this.rotation), Math.sin(this.rotation)]
 
