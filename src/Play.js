@@ -19,7 +19,7 @@ class Play extends Phaser.Scene {
         this.load.image('car', 'RedRaceCar.png')
         this.load.image('road', 'road.png')
 
-        this.load.image('tileset', 'TileMap1.png')
+        this.load.image('tileset', 'ExtrudedTileMap1.png')
         this.load.path = './assets/tiles/'
         this.load.tilemapTiledJSON('tile_straight_road', 'StraightRoad.tmj')
 
