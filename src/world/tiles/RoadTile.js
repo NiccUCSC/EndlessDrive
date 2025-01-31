@@ -76,14 +76,6 @@ class RoadTile extends WorldTile {
             if (isValid(tile, connections)) validTiles.push(tileName)
         }
 
-
-        // console.log(connections)
-        // console.log(x, y)
-        // for (let tile of validTiles) {
-        //     console.log(RoadTile.connections[tile])
-        // }
-
-
         if (!validTiles.length) {
             console.warn(`NO VALID TILES WITH CONSTRAINT ${connections}`)
             return
@@ -108,7 +100,7 @@ class RoadTile extends WorldTile {
     }
 
     static spawnQueue = []      // stores tiles waiting to be generated
-    static spawnRate = 50        // maximum new tile spawnrate
+    static spawnRate = 50       // maximum new tile spawnrate
     static timeTillSpawn = 0    // time in seconds till next spawn
 
     static addToSpawnQueue(pos) {
@@ -128,10 +120,10 @@ class RoadTile extends WorldTile {
 
 
     destroy() {
-        console.log(this)
+        // console.log(this)
         RoadTile.alive.delete(this)
         super.destroy()
-        console.log(RoadTile.alive)
+        // console.log(RoadTile.alive)
     }
 
 }
