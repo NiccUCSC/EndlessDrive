@@ -8,6 +8,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
         this.setFriction(8)             // Increase ground friction
         this.setFrictionStatic(0.8)     // Make it harder to start moving
         // this.setFrictionAir(1)          // Increase air resistance
+        this.name = "car"
     }
 
     update(time, dt) {

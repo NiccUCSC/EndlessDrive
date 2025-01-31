@@ -4,6 +4,7 @@ class WorldTile {
     static gridPixelSize = WorldTile.tileSize * WorldTile.gridSize
 
     constructor(x, y, key, layer="ground") {
+
         this.scene = World.PlayScene
 
         this.map = this.scene.make.tilemap({key: key, tileWidth: 32, tileHeight: 32})
@@ -12,12 +13,16 @@ class WorldTile {
 
         this.body = World.PlayScene.matter.add.rectangle(
             x * WorldTile.gridPixelSize, y * WorldTile.gridPixelSize, 
-            WorldTile.gridPixelSize, WorldTile.gridPixelSize, 
-            { isStatic: true,
+            WorldTile.gridPixelSize, WorldTile.gridPixelSize, {
+                isStatic: true,
                 isSensor: true,
              } // Set to true if the tile shouldn't move
         )
+
+        this.body.parentTile = this
+
         this.setPosition(x, y)
+
     }
 
     setPosition(x, y) {
@@ -31,6 +36,8 @@ class WorldTile {
 
     destroy() {
         this.map.destroy()
+        this.scene.matter.world.remove(this.body)
+        this.body = undefined
     }
 
 }

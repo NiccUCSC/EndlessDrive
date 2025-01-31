@@ -36,8 +36,23 @@ class Play extends Phaser.Scene {
         const tile = new RoadTile(0, 0)
         tile.generateNext()
 
+        // RoadTile.getTileAt(1, 0).generateNext()
+        // RoadTile.getTileAt(2, 0).generateNext()
+        // RoadTile.getTileAt(1, 0).generateNext()
+        // RoadTile.getTileAt(0, 0).generateNext()
+
         WorldCamera.init(this)
         WorldCamera.startFollow(this.car)
+
+
+        this.matter.world.on('collisionstart', (event) => {
+            let isCar = body => { return body.gameObject instanceof Car }
+            let isTile = body => { return body.parentTile instanceof RoadTile }
+            event.pairs.forEach(pair => {
+                if (isCar(pair.bodyA) && isTile(pair.bodyB)) pair.bodyB.parentTile.generateNext()
+                if (isCar(pair.bodyB) && isTile(pair.bodyA)) pair.bodyA.parentTile.generateNext()
+            })
+        })
     }
 
     update(time, dt) {
@@ -48,5 +63,7 @@ class Play extends Phaser.Scene {
 
         this.car.update(time, dt)
         WorldCamera.update(time, dt)
+
+        RoadTile.update(time, dt)
     }
 }

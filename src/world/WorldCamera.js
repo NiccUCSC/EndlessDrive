@@ -6,7 +6,7 @@ class WorldCamera {
         this.scene = scene;
         this.cam = scene.cameras.main
 
-        this.vertTiles = 64
+        this.vertTiles = 256
         this.zoom = tiles => 2 * scene.cameras.main.height / 16 / tiles
     }
 

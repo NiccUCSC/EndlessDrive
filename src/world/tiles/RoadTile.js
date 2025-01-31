@@ -30,7 +30,6 @@ class RoadTile extends WorldTile {
         this.generation = RoadTile.generation
 
         RoadTile.alive.add(this)
-        console.log(RoadTile.alive)
     }
 
     static getTileAt(x, y) {
@@ -101,33 +100,38 @@ class RoadTile extends WorldTile {
                       [1, 1], [1, -1], [-1, -1], [-1, 1]]   // 2 step
 
         for (let delta of deltas) {
-            RoadTile.generateAt(this.worldPos[0] + delta[0], this.worldPos[1] + delta[1])
+            RoadTile.addToSpawnQueue([this.worldPos[0] + delta[0], this.worldPos[1] + delta[1]])
+
         }
 
-
         RoadTile.deleteOld()
+    }
 
-        // 
+    static spawnQueue = []      // stores tiles waiting to be generated
+    static spawnRate = 50        // maximum new tile spawnrate
+    static timeTillSpawn = 0    // time in seconds till next spawn
 
-        // for (let i = 0; i < 4; i++) {
-        //     const delta = deltas[i]
-        //     let validTiles = []
-        //     for (let tileName of Object.keys(RoadTile.connections)) {
-        //         const tile = RoadTile.connections[tileName]
-        //         if (tile[i]) validTiles.push(tileName)
-        //     }
+    static addToSpawnQueue(pos) {
+        for (let elem of this.spawnQueue) if (pos[0] == elem[0] && pos[1] == elem[1]) return
+        this.spawnQueue.push(pos)
+    }
 
-            
-        //     let nextTile = validTiles[Math.floor(Math.random() * validTiles.length)]
+    static update(time, dt) {
+        this.timeTillSpawn -= dt
+        if (this.timeTillSpawn <= 0) {
+            this.timeTillSpawn += 1 / this.spawnRate
+            const newTilePos = this.spawnQueue.shift()
+            if (newTilePos) this.generateAt(...newTilePos)
+        }
 
-        //     new RoadTile(this.worldPos[0] + delta[0], this.worldPos[1] + delta[1], nextTile)
-        // }
     }
 
 
     destroy() {
+        console.log(this)
         RoadTile.alive.delete(this)
         super.destroy()
+        console.log(RoadTile.alive)
     }
 
 }
