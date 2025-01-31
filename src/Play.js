@@ -29,17 +29,12 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        this.car = new Car(this, 256, 256)
-        // const tileA = new StraightTile(0, 0)
-        // const tileB = new IntersectionTile(0, 1)
+        this.car = new Car(this, 0, 0)
 
-        // for (let i = 0; i < 100; i++) {
-        //     let x = i % 10
-        //     let y = (i - x) / 10
-        //     new IntersectionTile(x + 3, y + 3)
-        // }
+        // RoadTile.createTest()
 
-        RoadTile.createTest()
+        const tile = new RoadTile(0, 0)
+        tile.generateNext()
 
         WorldCamera.init(this)
         WorldCamera.startFollow(this.car)
