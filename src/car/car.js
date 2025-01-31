@@ -5,17 +5,20 @@ class Car extends Phaser.Physics.Matter.Sprite {
         this.setDepth(10)
         this.setOrigin(0.5, 0.5)
         this.setPosition(x, y)
-        this.setFriction(8);         // Increase ground friction
-        this.setFrictionStatic(0.8);   // Make it harder to start moving
-        this.setFrictionAir(1);     // Increase air resistance
+        this.setFriction(8)             // Increase ground friction
+        this.setFrictionStatic(0.8)     // Make it harder to start moving
+        // this.setFrictionAir(1)          // Increase air resistance
     }
 
     update(time, dt) {
         let speed = Math.sqrt(this.body.velocity.x**2 + this.body.velocity.y**2) / 16
+        this.setFrictionAir(World.downKey.isDown ? 10 : 1)
 
-        let fowardForce = World.upKey.isDown - 3 * (speed > 2) * World.downKey.isDown
+
+        let fowardForce = 0.8 * (World.upKey.isDown - (speed > 1) * World.downKey.isDown)
         let turnForce = (World.rightKey.isDown - World.leftKey.isDown)
-        turnForce *= Math.min(speed / 12, 5)
+        turnForce *= (speed / 15)*1.7
+
 
         let dir = [Math.cos(this.rotation), Math.sin(this.rotation)]
 

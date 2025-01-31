@@ -25,12 +25,21 @@ class Play extends Phaser.Scene {
 
         this.load.tilemapTiledJSON('tileStraightRoad', 'StraightRoad01.tmj')
         this.load.tilemapTiledJSON('tileIntersectionRoad', 'IntersectionRoad01.tmj')
+        this.load.tilemapTiledJSON('multiroad', 'MultiRoad.tmj')
     }
 
     create() {
-        this.car = new Car(this, 0, 0)
-        const tileA = new StraightTile(0, 0)
-        const tileB = new IntersectionTile(0, 1)
+        this.car = new Car(this, 256, 256)
+        // const tileA = new StraightTile(0, 0)
+        // const tileB = new IntersectionTile(0, 1)
+
+        // for (let i = 0; i < 100; i++) {
+        //     let x = i % 10
+        //     let y = (i - x) / 10
+        //     new IntersectionTile(x + 3, y + 3)
+        // }
+
+        RoadTile.createTest()
 
         WorldCamera.init(this)
         WorldCamera.startFollow(this.car)
