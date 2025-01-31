@@ -18,8 +18,6 @@ class WorldTile {
              } // Set to true if the tile shouldn't move
         )
         this.setPosition(x, y)
-
-        console.log(this.layer)
     }
 
     setPosition(x, y) {
