@@ -42,6 +42,12 @@ class RoadTile extends WorldTile {
         return null
     }
 
+    static deleteOld() {
+        for (let tile of this.alive)
+            if (this.generation - tile.generation > 4) 
+                tile.destroy()
+    }
+
     static generateAt(x, y) {
         const curr = this.getTileAt(x, y)
         if (curr) {                                             // if tile is occupied
@@ -50,7 +56,7 @@ class RoadTile extends WorldTile {
         }
 
         // get the constraints of the tile
-        let connections = [0, 0, 0, 0]
+        let connections = [-1, -1, -1, -1]                      // -1 means free
         let deltas = [[1, 0], [0, 1], [-1, 0], [0, -1]]
         for (let i = 0; i < 4; i++) {
             const delta = deltas[i]
@@ -62,7 +68,7 @@ class RoadTile extends WorldTile {
         let validTiles = []
         let isValid = (tile, connections) => {
             for (let i = 0; i < 4; i++)
-                if (connections[i] && !tile[i]) return false
+                if (connections[i] != -1 && connections[i] != tile[i]) return false
             return true
         }
 
@@ -72,11 +78,11 @@ class RoadTile extends WorldTile {
         }
 
 
-        console.log(connections)
-        console.log(x, y)
-        for (let tile of validTiles) {
-            console.log(RoadTile.connections[tile])
-        }
+        // console.log(connections)
+        // console.log(x, y)
+        // for (let tile of validTiles) {
+        //     console.log(RoadTile.connections[tile])
+        // }
 
 
         if (!validTiles.length) {
@@ -89,13 +95,19 @@ class RoadTile extends WorldTile {
     }
 
     generateNext() {
-        let deltas = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+        RoadTile.generation++
+
+        let deltas = [[1, 0], [0, 1], [-1, 0], [0, -1],     // 1 step
+                      [1, 1], [1, -1], [-1, -1], [-1, 1]]   // 2 step
 
         for (let delta of deltas) {
             RoadTile.generateAt(this.worldPos[0] + delta[0], this.worldPos[1] + delta[1])
         }
 
-        // RoadTile.generation++
+
+        RoadTile.deleteOld()
+
+        // 
 
         // for (let i = 0; i < 4; i++) {
         //     const delta = deltas[i]
@@ -111,6 +123,7 @@ class RoadTile extends WorldTile {
         //     new RoadTile(this.worldPos[0] + delta[0], this.worldPos[1] + delta[1], nextTile)
         // }
     }
+
 
     destroy() {
         RoadTile.alive.delete(this)
