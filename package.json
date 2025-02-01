@@ -1,0 +1,27 @@
+{
+  "name": "endlessdrive",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiccUCSC/EndlessDrive.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NiccUCSC/EndlessDrive/issues"
+  },
+  "homepage": "https://github.com/NiccUCSC/EndlessDrive#readme",
+  "description": "",
+  "dependencies": {
+    "phaser": "^3.87.0",
+    "planck": "^1.3.0"
+  }
+}

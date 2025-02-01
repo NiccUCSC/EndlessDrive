@@ -1,0 +1,7 @@
+// setup node package manager in project
+npm init -y
+npm install phaser planck
+
+// update the sources for phaser in the index file
+    <script src="node_modules/phaser/dist/phaser.js"></script>
+    <script src="node_modules/planck/dist/planck.min.js"></script>
