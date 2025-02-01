@@ -66,7 +66,6 @@ class Play extends Phaser.Scene {
         this.car.update(time, dt)
         this.cop.update(time, dt)
 
-        console.log(this.cop.x)
         WorldCamera.update(time, dt)
 
         RoadTile.update(time, dt)

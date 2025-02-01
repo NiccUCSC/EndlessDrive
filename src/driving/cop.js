@@ -8,8 +8,9 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         this.setPosition(x, y-16)
         this.setFriction(8)             // Increase ground friction
         this.setFrictionStatic(0.8)     // Make it harder to start moving
-        // this.setFrictionAir(1)          // Increase air resistance
-        this.name = "car"
+        this.setFrictionAir(25)          // Increase air resistance
+        this.setBounce(0.8)
+        this.name = "cop"
     }
 
     update(time, dt) {
@@ -23,27 +24,44 @@ class Cop extends Phaser.Physics.Matter.Sprite {
 
 
 
-        // let car = this.scene.car
-        // let pos = new Phaser.Math.Vector2(this.x, this.y)
-        // let carPos = new Phaser.Math.Vector2(car.x, car.y)
+        let car = this.scene.car
+        let pos = new Phaser.Math.Vector2(this.x, this.y)
+        let carPos = new Phaser.Math.Vector2(car.x, car.y)
+
+        let dir = new Phaser.Math.Vector2(Math.cos(this.rotation), Math.sin(this.rotation))
+        let targetDir = carPos.clone().subtract(pos)
+
+        let rotation = this.rotation
+        let targetRotation = targetDir.angle()
+
+        let deltaRotation = targetRotation - rotation
+        if (deltaRotation < -Math.PI) deltaRotation += 2 * Math.PI
+        if (deltaRotation > Math.PI) deltaRotation -= 2 * Math.PI
 
 
-        // let dir = new Phaser.Math.Vector2(Math.cos(this.rotation), Math.sin(this.rotation))
+        let distToCar = targetDir.length() / 16
+        let driveForce = distToCar * 0.3 + 10
+
+        let turnForce = Math.max(Math.min(deltaRotation, Math.PI / 6), -Math.PI / 6)
+        turnForce *= driveForce * 0.2 + 10
+
+        let fowardForce = driveForce
 
 
-        // let distToCar = Math.sqrt(disp[0]*disp[0] + disp[1]*disp[1])
-        // let angleToCar = 
 
-        // // let tanVec = new Phaser.Math.Vector2(dir[0], dir[1]).setLength(fowardForce)
-        // let perVec = new Phaser.Math.Vector2(-dir[1], dir[0]).setLength(turnForce)
+        let tanVec = new Phaser.Math.Vector2(dir.x, dir.y).setLength(fowardForce)
+        let perVec = new Phaser.Math.Vector2(-dir.y, dir.x).setLength(turnForce)
 
-        // // this.applyForce(tanVec)
-        // this.applyForce(perVec)
+
+        // console.log(tan)
+
+        this.applyForce(tanVec)
+        this.applyForce(perVec)
 
 
         // this.applyForce(min(disp.scale(1/200), 5))
 
-        // let newVel = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y)
-        // this.rotation = newVel.angle()
+        let newVel = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y)
+        this.rotation = newVel.angle()
     }
 }
