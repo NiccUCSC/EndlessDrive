@@ -17,6 +17,7 @@ class Play extends Phaser.Scene {
         this.load.image('wall', 'wall.png')
         this.load.image('oneway', 'one_way_wall.png')
         this.load.image('car', 'RedRaceCar.png')
+        this.load.image('cop', 'cop.png')
         this.load.image('road', 'road.png')
 
         this.load.image('tileset', 'ExtrudedTileMap1.png')
@@ -30,6 +31,7 @@ class Play extends Phaser.Scene {
 
     create() {
         this.car = new Car(this, 0, 0)
+        this.cop = new Cop(this, 0, 0)
 
         // RoadTile.createTest()
 
@@ -62,6 +64,9 @@ class Play extends Phaser.Scene {
 
 
         this.car.update(time, dt)
+        this.cop.update(time, dt)
+
+        console.log(this.cop.x)
         WorldCamera.update(time, dt)
 
         RoadTile.update(time, dt)

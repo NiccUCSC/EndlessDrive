@@ -1,10 +1,10 @@
 class Car extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, texture="car") {
-        super(scene.matter.world, x, y, texture)
+        super(scene.matter.world, 0, 0, texture)
         scene.add.existing(this)
         this.setDepth(10)
         this.setOrigin(0.5, 0.5)
-        this.setPosition(x, y)
+        this.setPosition(x, y-16)
         this.setFriction(8)             // Increase ground friction
         this.setFrictionStatic(0.8)     // Make it harder to start moving
         // this.setFrictionAir(1)          // Increase air resistance
