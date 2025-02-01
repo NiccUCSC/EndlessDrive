@@ -54,7 +54,12 @@ class Car extends Phaser.Physics.Matter.Sprite {
             this.steering = Math.max(Math.min(this.steering, 1), -1)
         }
         let angularSpeed = this.steering * speed / this.turnRadius
+        let angleDiff = this.getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
         this.rotation += angularSpeed * dt
+
+        let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.1, 1), 0)
+        let groundAcc = this.groundAccStatic * (1 - slidePercent) + this.groundAccKinetic * slidePercent
+        console.log(slidePercent)
 
         // car rotation
         // rotation to straighten
@@ -90,7 +95,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
         let slideVel = wheelVel.clone().sub(vel)
         let slideDir = slideVel.clone()
         slideDir.normalize()
-        let slideForce = Math.min(this.groundAccStatic, slideVel.length() / dt)
+        let slideForce = Math.min(groundAcc, slideVel.length() / dt)
         // slideForce = slideVel.length() / dt
 
         // console.log(slideForce)
@@ -99,9 +104,6 @@ class Car extends Phaser.Physics.Matter.Sprite {
         // direction of velocity
         let velDir = vel.clone()
         velDir.normalize()
-
-        console.log(speed)
-
 
         let forces = [
 
