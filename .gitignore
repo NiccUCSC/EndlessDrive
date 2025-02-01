@@ -5,4 +5,6 @@ __pycache__/
 
 # Ignore virtual environments
 pyenv/
-# node_modules/
+node_modules/
+!node_modules/phaser/dist/phaser.js
+!node_modules/planck/dist/planck.min.js
