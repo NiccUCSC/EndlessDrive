@@ -13,8 +13,6 @@ class Car extends Phaser.Physics.Matter.Sprite {
 
         this.name = "car"
 
-        console.log(this.scene)
-
         this.box2dBody = this.scene.world.createBody({
             type: "dynamic",
             position: planck.Vec2(x, y),
@@ -23,12 +21,12 @@ class Car extends Phaser.Physics.Matter.Sprite {
         this.steering = 0   // 1 = right, -1 = left, 0 = straigt
         this.steeringRate = 10
         this.wheelSpeed = 0
-        this.wheelAcc = 15
-        this.topSpeed = 35
+        this.wheelAcc = 20
+        this.topSpeed = 32
 
         this.turnRadius = 10
         this.groundAccStatic = 80
-        this.groundAccKinetic = 60
+        this.groundAccKinetic = 55
 
     }
 
@@ -37,12 +35,23 @@ class Car extends Phaser.Physics.Matter.Sprite {
     }
 
     physicsUpdate(time, dt) {
+
+
+        // car state
         let pos = this.box2dBody.getPosition()
         let vel = this.box2dBody.getLinearVelocity()
+        let angleDiff = this.getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
+        let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0)
+
 
         // process key inputs
         let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
         let fowardForce = this.wheelAcc * (World.upKey.isDown - 1.25 * World.downKey.isDown)
+
+        // wheel speed
+        this.wheelSpeed += (fowardForce * (1 + 0.15 * slidePercent) - 
+                            this.wheelSpeed * this.wheelAcc / this.topSpeed) * dt
+
 
         // Car steering
         let steeringForce = World.rightKey.isDown - World.leftKey.isDown
@@ -53,32 +62,10 @@ class Car extends Phaser.Physics.Matter.Sprite {
             this.steering += steeringForce * this.steeringRate * dt
             this.steering = Math.max(Math.min(this.steering, 1), -1)
         }
-        let angularSpeed = this.steering * speed / this.turnRadius
-        let angleDiff = this.getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
+        let angularSpeed = this.steering * (speed + this.wheelSpeed) / 2 / this.turnRadius
         this.rotation += angularSpeed * dt
 
-        let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.1, 1), 0)
         let groundAcc = this.groundAccStatic * (1 - slidePercent) + this.groundAccKinetic * slidePercent
-        console.log(slidePercent)
-
-        // car rotation
-        // rotation to straighten
-
-        // let targetRotation = Math.atan2(vel.y, vel.x)
-        // let currentRotation = this.rotation
-
-        // let fowardsDiff = this.getAngularDiff(targetRotation, currentRotation)
-        // let backwardsDiff = this.getAngularDiff(targetRotation, currentRotation + Math.PI)
-
-        // let turnStep = Math.abs(fowardsDiff) <= Math.abs(backwardsDiff) ? fowardsDiff : backwardsDiff
-        // if (turnStep < -Math.PI) turnStep += 2 * Math.PI
-        // if (turnStep > Math.PI) turnStep -= 2 * Math.PI
-        // let maxTurnStep = 0.5 * speed / this.turnRadius * dt
-        // turnStep = Math.max(Math.min(turnStep, maxTurnStep), -maxTurnStep)
-        // this.rotation += turnStep
-
-        // rotation due to steering
-
 
 
         // direction of car
@@ -88,7 +75,6 @@ class Car extends Phaser.Physics.Matter.Sprite {
         // (wheelVel - vel) dot dir = |wheelVel - vel| * fowardForce / groundAcc
         // (dir[0] - vel[0])*dir[0] + (dir[1] - vel[1])*dir[1] = sqrt()
 
-        this.wheelSpeed += (fowardForce - this.wheelSpeed * this.wheelAcc / this.topSpeed) * dt
 
         let wheelVel = planck.Vec2(dir[0], dir[1]).mul(this.wheelSpeed)
 
