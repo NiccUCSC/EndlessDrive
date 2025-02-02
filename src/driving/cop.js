@@ -11,6 +11,16 @@ class Cop extends Phaser.Physics.Matter.Sprite {
             type: "dynamic",
             position: planck.Vec2(x, y),
         })
+        this.box2dBody.createFixture({
+            shape: planck.Box(0.9, 0.4),
+            friction: 0,
+            restitution: 0
+        })
+        this.box2dBody.setMassData({
+            mass: 1,
+            center: planck.Vec2(0, 0),
+            I: 1,
+        })
 
         this.wheelSpeed = 0
         this.wheelAcc = 5
@@ -46,7 +56,8 @@ class Cop extends Phaser.Physics.Matter.Sprite {
 
 
         // Car steering
-        let maxRotDelta = speed / this.turnRadius * dt
+        let turnRadius = this.turnRadius * Math.min(0.1, 1)
+        let maxRotDelta = speed / turnRadius * dt
         let rotDelta = getAngularDiff(Math.atan2(distToCar.y, distToCar.x), this.rotation)
         rotDelta = Math.max(Math.min(rotDelta, maxRotDelta), -maxRotDelta)
 
@@ -73,6 +84,9 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         ]
 
         for (let force of forces) this.box2dBody.applyForce(force, pos)
+
+        this.box2dBody.setAngularVelocity(0)
+        this.box2dBody.setAngle(this.rotation)    
     }
 
     update(time, dt) {

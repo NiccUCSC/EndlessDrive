@@ -11,8 +11,8 @@ class Play extends Phaser.Scene {
         this.world = planck.World(planck.Vec2(0, 0)) // Gravity
         this.worldTimeSinceUpdate = 0
         this.worldUpdateTime = 1 / 64
-        this.worldTimeScale = 1.54
-
+        this.worldTimeScale = 1
+        this.debugGraphics = this.add.graphics()
     }
 
     preload() {
@@ -41,13 +41,8 @@ class Play extends Phaser.Scene {
 
         // RoadTile.createTest()
 
-        const tile = new RoadTile(0, 0)
-        tile.generateNext()
-
-        // RoadTile.getTileAt(1, 0).generateNext()
-        // RoadTile.getTileAt(2, 0).generateNext()
-        // RoadTile.getTileAt(1, 0).generateNext()
-        // RoadTile.getTileAt(0, 0).generateNext()
+        // const tile = new RoadTile(0, 0)
+        // tile.generateNext()
 
         WorldCamera.init(this)
         WorldCamera.startFollow(this.car)
@@ -61,25 +56,6 @@ class Play extends Phaser.Scene {
                 if (isCar(pair.bodyB) && isTile(pair.bodyA)) pair.bodyA.parentTile.generateNext()
             })
         })
-
-        console.log(this.world)
-
-        // Create Ground (Static)
-        this.ground = this.world.createBody({
-            position: planck.Vec2(400 / 30, 580 / 30),
-        });
-        this.ground.createFixture(planck.Box(400 / 30, 10 / 30));
-
-        // Create a Box (Dynamic)
-        this.boxBody = this.world.createBody({
-            type: "dynamic",
-            position: planck.Vec2(400 / 30, 100 / 30),
-        });
-        this.boxBody.createFixture(planck.Box(20 / 30, 20 / 30), { density: 1.0, friction: 0.3 });
-
-        // Add Phaser Sprite
-        this.boxSprite = this.add.image(400, 100, "box").setScale(0.5);
-
 
     }
 
@@ -97,10 +73,9 @@ class Play extends Phaser.Scene {
         this.worldTimeSinceUpdate += dt * this.worldTimeScale
         while (this.worldTimeSinceUpdate > this.worldUpdateTime) {
             this.worldTimeSinceUpdate -= this.worldUpdateTime
-
             this.physicsUpdate(this.worldTimeSinceUpdate, this.worldUpdateTime)
-
             this.world.step(this.worldUpdateTime); // Run physics simulation
+            drawDebugGraphics(this, this.world, this.debugGraphics)
         }
 
 
@@ -110,5 +85,56 @@ class Play extends Phaser.Scene {
         WorldCamera.update(time, dt)
 
         RoadTile.update(time, dt)
+    }
+}
+
+// Chat GPT debug function
+function drawDebugGraphics(scene, world, graphics) {
+    graphics.clear()
+    graphics.lineStyle(1, 0x00ff00, 1)
+    graphics.fillStyle(0xff0000, 0.5)
+    graphics.depth = 1000
+
+    // Iterate over all Box2D bodies
+    for (let body = world.getBodyList(); body; body = body.getNext()) {
+        const pos = body.getPosition();
+        const angle = body.getAngle(); // Get body's rotation in radians
+
+        // Convert Box2D world coordinates to Phaser pixels (1m = 16px)
+        const x = pos.x * 16;
+        const y = pos.y * 16;
+
+        for (let fixture = body.getFixtureList(); fixture; fixture = fixture.getNext()) {
+            const shape = fixture.getShape();
+
+            if (shape.getType() === 'polygon') { // Polygons & Boxes
+                const vertices = shape.m_vertices.map(v => {
+                    // Rotate the vertex around (0,0) and apply body's position
+                    const rotatedX = v.x * Math.cos(angle) - v.y * Math.sin(angle);
+                    const rotatedY = v.x * Math.sin(angle) + v.y * Math.cos(angle);
+
+                    return {
+                        x: (rotatedX + pos.x) * 16, 
+                        y: (rotatedY + pos.y) * 16
+                    };
+                });
+
+                graphics.beginPath();
+                graphics.moveTo(vertices[0].x, vertices[0].y);
+
+                for (let i = 1; i < vertices.length; i++) {
+                    graphics.lineTo(vertices[i].x, vertices[i].y);
+                }
+
+                graphics.closePath();
+                graphics.strokePath();
+                graphics.fillPath();
+            }
+            else if (shape.getType() === 'circle') { // Circles
+                const radius = shape.m_radius * 16;
+                graphics.strokeCircle(x, y, radius * 2);
+                graphics.fillCircle(x, y, radius * 2);
+            }
+        }
     }
 }

@@ -12,6 +12,17 @@ class Car extends Phaser.Physics.Matter.Sprite {
             type: "dynamic",
             position: planck.Vec2(x, y),
         })
+        this.box2dBody.createFixture({
+            shape: planck.Box(0.9, 0.45),
+            friction: 0,
+            restitution: 0
+        })
+        this.box2dBody.setMassData({
+            mass: 1,
+            center: planck.Vec2(0, 0),
+            I: 1,
+        })
+
 
         this.steering = 0   // 1 = right, -1 = left, 0 = straigt
         this.steeringRate = 12
@@ -78,6 +89,9 @@ class Car extends Phaser.Physics.Matter.Sprite {
         ]
 
         for (let force of forces) this.box2dBody.applyForce(force, pos)
+
+        this.box2dBody.setAngularVelocity(0)
+        this.box2dBody.setAngle(this.rotation)
     }
 
     update(time, dt) {
