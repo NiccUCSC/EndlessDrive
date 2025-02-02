@@ -30,10 +30,12 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         })
 
         this.wheelSpeed = 0
-        this.wheelAcc = 5
+        this.wheelAcc = 2
         this.topSpeed = 15          // top speed when close
         this.maxTopSpeed = 40       // top speed when at follow dist
-        this.followDist = 8
+        this.nearTopSpeed = 25      // go faster when close
+        this.followDist = 15
+        this.nearDist = 10
 
         this.turnRadius = 10
         this.groundAccStatic = 80
@@ -56,6 +58,7 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         // process key inputs
         let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
         let fowardForce = this.wheelAcc * Math.min(Math.max(targetDist / this.followDist - 1, 1), this.maxTopSpeed / this.topSpeed)
+        fowardForce *= Math.min(Math.max(2 - targetDist / this.nearDist, 1), this.nearTopSpeed / this.topSpeed)
 
         // wheel speed
         this.wheelSpeed += (fowardForce * (1 - 0.15 * slidePercent) - 

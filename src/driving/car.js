@@ -18,7 +18,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
             restitution: 0
         })
         this.box2dBody.setMassData({
-            mass: 1,
+            mass: 5,
             center: planck.Vec2(0, 0),
             I: 1,
         })
@@ -85,7 +85,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
         velDir.normalize()
 
         let forces = [
-            slideDir.mul(slideForce),
+            slideDir.mul(slideForce * 5),
         ]
 
         for (let force of forces) this.box2dBody.applyForce(force, pos)
