@@ -5,11 +5,6 @@ class Car extends Phaser.Physics.Matter.Sprite {
         this.scene = scene
         this.setDepth(10)
         this.setOrigin(0.5, 0.5)
-        this.setPosition(x, y-16)
-        this.setFriction(8)             // Increase ground friction
-        this.setFrictionStatic(0.8)     // Make it harder to start moving
-        // this.setFrictionAir(1)          // Increase air resistance
-        this.setBounce(0.1)
 
         this.name = "car"
 
@@ -19,7 +14,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
         })
 
         this.steering = 0   // 1 = right, -1 = left, 0 = straigt
-        this.steeringRate = 10
+        this.steeringRate = 12
         this.wheelSpeed = 0
         this.wheelAcc = 20
         this.topSpeed = 32
@@ -62,7 +57,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
             this.steering += steeringForce * this.steeringRate * dt
             this.steering = Math.max(Math.min(this.steering, 1), -1)
         }
-        let angularSpeed = this.steering * (speed + this.wheelSpeed) / 2 / this.turnRadius
+        let angularSpeed = this.steering * (speed + Math.abs(this.wheelSpeed)) / 2 / this.turnRadius
         this.rotation += angularSpeed * dt
 
         let groundAcc = this.groundAccStatic * (1 - slidePercent) + this.groundAccKinetic * slidePercent
@@ -70,29 +65,18 @@ class Car extends Phaser.Physics.Matter.Sprite {
 
         // direction of car
         let dir = [Math.cos(this.rotation), Math.sin(this.rotation)]
-
-        // slideDir dot dir = fowardForce / groundAcc
-        // (wheelVel - vel) dot dir = |wheelVel - vel| * fowardForce / groundAcc
-        // (dir[0] - vel[0])*dir[0] + (dir[1] - vel[1])*dir[1] = sqrt()
-
-
         let wheelVel = planck.Vec2(dir[0], dir[1]).mul(this.wheelSpeed)
 
         let slideVel = wheelVel.clone().sub(vel)
         let slideDir = slideVel.clone()
         slideDir.normalize()
         let slideForce = Math.min(groundAcc, slideVel.length() / dt)
-        // slideForce = slideVel.length() / dt
-
-        // console.log(slideForce)
-
 
         // direction of velocity
         let velDir = vel.clone()
         velDir.normalize()
 
         let forces = [
-
             slideDir.mul(slideForce),
         ]
 

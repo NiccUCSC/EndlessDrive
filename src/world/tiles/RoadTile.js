@@ -100,7 +100,7 @@ class RoadTile extends WorldTile {
     }
 
     static spawnQueue = []      // stores tiles waiting to be generated
-    static spawnRate = 50       // maximum new tile spawnrate
+    static spawnRate = 800       // maximum new tile spawnrate
     static timeTillSpawn = 0    // time in seconds till next spawn
 
     static addToSpawnQueue(pos) {

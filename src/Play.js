@@ -11,7 +11,7 @@ class Play extends Phaser.Scene {
         this.world = planck.World(planck.Vec2(0, 0)) // Gravity
         this.worldTimeSinceUpdate = 0
         this.worldUpdateTime = 1 / 64
-        this.worldTimeScale = 1
+        this.worldTimeScale = 1.54
 
     }
 
