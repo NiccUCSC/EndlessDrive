@@ -32,6 +32,8 @@ class RoadTile extends WorldTile {
         RoadTile.alive.add(this)
 
         generateTileCollisionBoxes(this, x, y, layer)
+
+        if (RoadTile.generation && Math.random() < 0.1) this.scene.generateCop(x * 32, y * 32)
     }
 
     static getTileAt(x, y) {
@@ -52,7 +54,7 @@ class RoadTile extends WorldTile {
     static generateAt(x, y) {
         const curr = this.getTileAt(x, y)
         if (curr) {                                             // if tile is occupied
-            if (this.generation - curr.generation < 2) return   // dont override parents
+            if (this.generation - curr.generation < 3) return   // dont override parents
             else curr.destroy()                                 // remove curr from gene pool
         }
 
@@ -134,8 +136,6 @@ class RoadTile extends WorldTile {
 }
 
 function generateTileCollisionBoxes(tile, x, y, type) {
-    let scene = tile.scene
-
     tile.box2dBody = tile.scene.world.createBody({
         type: "static",
         position: planck.Vec2(x * 32, y * 32),
@@ -159,8 +159,6 @@ function generateTileCollisionBoxes(tile, x, y, type) {
     else                 addOpening3(body)
     if (!connections[3]) addWall4(body)
     else                 addOpening4(body)
-
-
 }
 
 function addWall1(body) {

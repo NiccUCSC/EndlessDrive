@@ -12,7 +12,7 @@ class Cop extends Phaser.Physics.Matter.Sprite {
             position: planck.Vec2(x, y),
         })
         this.box2dBody.createFixture({
-            shape: planck.Box(0.9, 0.4),
+            shape: planck.Box(0.95, 0.45),
             friction: 0,
             restitution: 0,
             filterCategoryBits: scene.VEHICAL_CATEGORY,
@@ -31,7 +31,7 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         })
 
         this.wheelSpeed = 0
-        this.wheelAcc = 2
+        this.wheelAcc = 4
         this.topSpeed = 15          // top speed when close
         this.maxTopSpeed = 40       // top speed when at follow dist
         this.nearTopSpeed = 25      // go faster when close

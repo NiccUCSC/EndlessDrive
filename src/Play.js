@@ -45,15 +45,11 @@ class Play extends Phaser.Scene {
     create() {
         this.car = new Car(this, 0, 0)
         this.cops = new Set([
-            new Cop(this, -40, 10),
-            new Cop(this, 40, 10),
-            new Cop(this, -32, 0),
-            new Cop(this, -36, -10),
+            new Cop(this, -40, 0),
         ])
 
 
         // RoadTile.createTest()
-
         const tile = new RoadTile(0, 0)
         // tile.generateNext()
 
