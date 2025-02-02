@@ -13,7 +13,11 @@ class Play extends Phaser.Scene {
         this.worldUpdateTime = 1 / 64
         this.worldTimeScale = 1
         this.debugGraphics = this.add.graphics()
+        this.VEHICAL_CATEGORY = 0x0001
         this.COP_CAR_CATEGORY = 0x0002
+        this.WHEEL_CATEGORY = 0x0004
+        this.SURFACE_CATEGORY = 0x0008
+        this.FIXED_CATEGORY = 0x0010
         this.debugMode = false
     }
 
@@ -25,7 +29,7 @@ class Play extends Phaser.Scene {
         this.load.image('wall', 'wall.png')
         this.load.image('oneway', 'one_way_wall.png')
         this.load.image('car', 'RedRaceCar.png')
-        this.load.image('cop', 'cop.png')
+        this.load.image('cop', 'CopCar.png')
         this.load.image('road', 'road.png')
 
         this.load.image('tileset', 'ExtrudedTileMap1.png')
@@ -41,6 +45,7 @@ class Play extends Phaser.Scene {
         this.car = new Car(this, 0, 0)
         this.cops = [
             new Cop(this, -40, 10),
+            new Cop(this, 40, 10),
             new Cop(this, -32, 0),
             new Cop(this, -36, -10),
         ]

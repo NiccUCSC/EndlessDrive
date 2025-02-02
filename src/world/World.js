@@ -16,11 +16,23 @@ class World {
         this.rightKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
 
         this.debugKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R)
-        console.log(this.debugKey)
+        this.timeScaleUpKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PERIOD)
+        this.timeScaleDownKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.COMMA)
+    
         this.debugKey.on('down', () => {
             playScene.debugMode = !playScene.debugMode
             if (!playScene.debugMode) playScene.debugGraphics.clear()
             console.log(playScene.debugMode)
+        })
+    
+        this.timeScaleUpKey.on('down', () => {
+            playScene.worldTimeScale += 1 / 8
+            console.log(`TIME SCALE = ${playScene.worldTimeScale}`)
+        })
+    
+        this.timeScaleDownKey.on('down', () => {
+            playScene.worldTimeScale -= 1 / 8
+            console.log(`TIME SCALE = ${playScene.worldTimeScale}`)
         })
     }
 
