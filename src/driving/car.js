@@ -15,7 +15,8 @@ class Car extends Phaser.Physics.Matter.Sprite {
         this.box2dBody.createFixture({
             shape: planck.Box(0.9, 0.45),
             friction: 0,
-            restitution: 0
+            restitution: 0,
+            filterCategoryBits: scene.VEHICAL_CATEGORY || scene.PLAYER_CATEGORY,
         })
         this.box2dBody.setMassData({
             mass: 5,
@@ -103,5 +104,11 @@ class Car extends Phaser.Physics.Matter.Sprite {
         aproxPos.add(deltaPos)
 
         this.setPosition(aproxPos.x * 16, aproxPos.y * 16)
+    }
+
+    destroy() {
+        this.scene.world.destroyBody(this.box2dBody)
+        this.box2dBody = null
+        super.destroy()
     }
 }

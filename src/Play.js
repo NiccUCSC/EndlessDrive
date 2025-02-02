@@ -18,6 +18,7 @@ class Play extends Phaser.Scene {
         this.WHEEL_CATEGORY = 0x0004
         this.SURFACE_CATEGORY = 0x0008
         this.FIXED_CATEGORY = 0x0010
+        this.PLAYER_CATEGORY = 0x0020
         this.debugMode = false
     }
 
@@ -43,12 +44,13 @@ class Play extends Phaser.Scene {
 
     create() {
         this.car = new Car(this, 0, 0)
-        this.cops = [
+        this.cops = new Set([
             new Cop(this, -40, 10),
             new Cop(this, 40, 10),
             new Cop(this, -32, 0),
             new Cop(this, -36, -10),
-        ]
+        ])
+
 
         // RoadTile.createTest()
 
@@ -68,6 +70,10 @@ class Play extends Phaser.Scene {
             })
         })
 
+    }
+
+    generateCop(x, y) {
+        this.cops.add(new Cop(this, x, y))
     }
 
     physicsUpdate(time, dt) {       // time since last update, world step time
@@ -102,8 +108,6 @@ class Play extends Phaser.Scene {
 // Chat GPT debug function
 function drawDebugGraphics(scene, world, graphics) {
     graphics.clear()
-    graphics.lineStyle(1, 0x00ff00, 1)
-    graphics.fillStyle(0x00ff00, 0.2)
     graphics.depth = 1000
 
     // Iterate over all Box2D bodies
@@ -111,11 +115,20 @@ function drawDebugGraphics(scene, world, graphics) {
         const pos = body.getPosition();
         const angle = body.getAngle(); // Get body's rotation in radians
 
+
         // Convert Box2D world coordinates to Phaser pixels (1m = 16px)
         const x = pos.x * 16;
         const y = pos.y * 16;
 
         for (let fixture = body.getFixtureList(); fixture; fixture = fixture.getNext()) {
+            if (fixture.isSensor() == true) {
+                graphics.lineStyle(1, 0xff00ff, 1)
+                graphics.fillStyle(0xff00ff, 0.2)
+            } else {
+                graphics.lineStyle(1, 0x00ff00, 1)
+                graphics.fillStyle(0x00ff00, 0.2)
+            }
+
             const shape = fixture.getShape();
 
             if (shape.getType() === 'polygon') { // Polygons & Boxes

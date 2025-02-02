@@ -14,7 +14,8 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         this.box2dBody.createFixture({
             shape: planck.Box(0.9, 0.4),
             friction: 0,
-            restitution: 0
+            restitution: 0,
+            filterCategoryBits: scene.VEHICAL_CATEGORY,
         })
         this.box2dBody.createFixture({
             shape: planck.Circle(1.1),
@@ -100,6 +101,17 @@ class Cop extends Phaser.Physics.Matter.Sprite {
     }
 
     update(time, dt) {
+        // kill condition
+        let pos = this.box2dBody.getPosition()
+        let carPos = this.scene.car.box2dBody.getPosition()
+        let distToCar = carPos.clone().sub(pos)
+        let targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
+        if (targetDist > 64) {
+            this.destroy()
+            return
+        }
+
+        // visual smoothness here
         let aproxPos = this.box2dBody.getPosition().clone()
         let deltaPos = this.box2dBody.getLinearVelocity().clone()
         let physicsLag = this.scene.worldTimeSinceUpdate
@@ -108,5 +120,12 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         aproxPos.add(deltaPos)
 
         this.setPosition(aproxPos.x * 16, aproxPos.y * 16)
+    }
+
+    destroy() {
+        this.scene.world.destroyBody(this.box2dBody)
+        this.box2dBody = null
+        this.scene.cops.delete(this)
+        super.destroy()
     }
 }
