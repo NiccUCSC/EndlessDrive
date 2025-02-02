@@ -2,19 +2,26 @@ class World {
     static TimeScale = 1
 
     static init(playScene) {
-        World.PlayScene = playScene
+        this.PlayScene = playScene
 
-        World.interactKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
-        World.debugKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z)
-        World.deselectKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q)
-        World.altKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ALT)
-        World.shiftKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
+        this.interactKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
+        this.debugKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z)
+        this.deselectKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q)
+        this.altKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ALT)
+        this.shiftKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
         
-        World.upKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
-        World.downKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
-        World.leftKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
-        World.rightKey = World.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
-    }
+        this.upKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
+        this.downKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
+        this.leftKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+        this.rightKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
 
+        this.debugKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R)
+        console.log(this.debugKey)
+        this.debugKey.on('down', () => {
+            playScene.debugMode = !playScene.debugMode
+            if (!playScene.debugMode) playScene.debugGraphics.clear()
+            console.log(playScene.debugMode)
+        })
+    }
 
 }

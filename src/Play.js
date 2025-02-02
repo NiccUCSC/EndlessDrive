@@ -13,6 +13,8 @@ class Play extends Phaser.Scene {
         this.worldUpdateTime = 1 / 64
         this.worldTimeScale = 1
         this.debugGraphics = this.add.graphics()
+        this.COP_CAR_CATEGORY = 0x0002
+        this.debugMode = false
     }
 
     preload() {
@@ -37,11 +39,15 @@ class Play extends Phaser.Scene {
 
     create() {
         this.car = new Car(this, 0, 0)
-        this.cop = new Cop(this, -32, 0)
+        this.cops = [
+            new Cop(this, -40, 10),
+            new Cop(this, -32, 0),
+            new Cop(this, -36, -10),
+        ]
 
         // RoadTile.createTest()
 
-        // const tile = new RoadTile(0, 0)
+        const tile = new RoadTile(0, 0)
         // tile.generateNext()
 
         WorldCamera.init(this)
@@ -61,7 +67,7 @@ class Play extends Phaser.Scene {
 
     physicsUpdate(time, dt) {       // time since last update, world step time
         this.car.physicsUpdate(time, dt)
-        this.cop.physicsUpdate(time, dt)
+        for (let cop of this.cops) cop.physicsUpdate(time, dt)
     }
 
     update(time, dt) {
@@ -75,12 +81,12 @@ class Play extends Phaser.Scene {
             this.worldTimeSinceUpdate -= this.worldUpdateTime
             this.physicsUpdate(this.worldTimeSinceUpdate, this.worldUpdateTime)
             this.world.step(this.worldUpdateTime); // Run physics simulation
-            drawDebugGraphics(this, this.world, this.debugGraphics)
+            if (this.debugMode) drawDebugGraphics(this, this.world, this.debugGraphics)
         }
 
 
         this.car.update(time, dt)
-        this.cop.update(time, dt)
+        for (let cop of this.cops) cop.update(time, dt)
 
         WorldCamera.update(time, dt)
 
@@ -92,7 +98,7 @@ class Play extends Phaser.Scene {
 function drawDebugGraphics(scene, world, graphics) {
     graphics.clear()
     graphics.lineStyle(1, 0x00ff00, 1)
-    graphics.fillStyle(0xff0000, 0.5)
+    graphics.fillStyle(0x00ff00, 0.2)
     graphics.depth = 1000
 
     // Iterate over all Box2D bodies
@@ -132,8 +138,8 @@ function drawDebugGraphics(scene, world, graphics) {
             }
             else if (shape.getType() === 'circle') { // Circles
                 const radius = shape.m_radius * 16;
-                graphics.strokeCircle(x, y, radius * 2);
-                graphics.fillCircle(x, y, radius * 2);
+                graphics.strokeCircle(x, y, radius);
+                graphics.fillCircle(x, y, radius);
             }
         }
     }

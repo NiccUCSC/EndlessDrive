@@ -16,6 +16,13 @@ class Cop extends Phaser.Physics.Matter.Sprite {
             friction: 0,
             restitution: 0
         })
+        this.box2dBody.createFixture({
+            shape: planck.Circle(1.2),
+            friction: 0,
+            restitution: 0,
+            filterCategoryBits: scene.COP_CAR_CATEGORY,
+            filterMaskBits: scene.COP_CAR_CATEGORY,
+        })
         this.box2dBody.setMassData({
             mass: 1,
             center: planck.Vec2(0, 0),
