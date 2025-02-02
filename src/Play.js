@@ -37,7 +37,7 @@ class Play extends Phaser.Scene {
 
     create() {
         this.car = new Car(this, 0, 0)
-        // this.cop = new Cop(this, -2000, 0)
+        this.cop = new Cop(this, -32, 0)
 
         // RoadTile.createTest()
 
@@ -85,6 +85,7 @@ class Play extends Phaser.Scene {
 
     physicsUpdate(time, dt) {       // time since last update, world step time
         this.car.physicsUpdate(time, dt)
+        this.cop.physicsUpdate(time, dt)
     }
 
     update(time, dt) {
@@ -104,7 +105,7 @@ class Play extends Phaser.Scene {
 
 
         this.car.update(time, dt)
-        // this.cop.update(time, dt)
+        this.cop.update(time, dt)
 
         WorldCamera.update(time, dt)
 

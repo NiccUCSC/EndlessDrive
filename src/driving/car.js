@@ -25,9 +25,6 @@ class Car extends Phaser.Physics.Matter.Sprite {
 
     }
 
-    getAngularDiff(angle1, angle2) {
-        return Math.atan2(Math.sin(angle1 - angle2), Math.cos(angle1 - angle2))
-    }
 
     physicsUpdate(time, dt) {
 
@@ -35,7 +32,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
         // car state
         let pos = this.box2dBody.getPosition()
         let vel = this.box2dBody.getLinearVelocity()
-        let angleDiff = this.getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
+        let angleDiff = getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
         let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0)
 
 
@@ -92,6 +89,5 @@ class Car extends Phaser.Physics.Matter.Sprite {
         aproxPos.add(deltaPos)
 
         this.setPosition(aproxPos.x * 16, aproxPos.y * 16)
-
     }
 }
