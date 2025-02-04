@@ -31,9 +31,74 @@ class RoadTile extends WorldTile {
 
         RoadTile.alive.add(this)
 
-        generateTileCollisionBoxes(this, x, y, layer)
+        // generateTileCollisionBoxes(this, x, y, layer)
+
+        this.generateWalls(x, y)
 
         if (RoadTile.generation && Math.random() < 0.1) this.scene.generateCop(x * 32, y * 32)
+    }
+
+    generateWalls(x, y) {
+        this.box2dBody = this.scene.world.createBody({
+            type: "static",
+            position: planck.Vec2(x * 32, y * 32),
+        })
+
+        this.box2dBody.createFixture({
+            shape: planck.Box(13, 13),
+            friction: 0,
+            restitution: 0,
+            isSensor: true,
+        })
+
+        let wallMap = []
+        let wallBoxes = []   // { y * 32 + x = width }
+        for (let y = 0; y < 32; y++) wallMap
+
+        this.layer.forEachTile(tile => {
+            wallMap[tile.y * 32 + tile.x] = tile.index == 34
+        })
+
+        let addNewRowBox = (x, y, width) => {
+            let height = 1
+            let boxBelow = wallBoxes[(y+1) * 32 + x]
+            if (boxBelow && boxBelow[0] == width) {
+                wallBoxes[(y+1) * 32 + x] = null
+                height = boxBelow[1] + 1
+            }
+            wallBoxes[y * 32 + x] = [width, height]
+        }
+
+        for (let y = 32 - 1; y >= 0; y--) {
+            let boxStartX = -1
+            let x = 0
+            for (; x < 32; x++) {
+                if (wallMap[y * 32 + x] && boxStartX == -1) boxStartX = x           // start the box
+                if (!wallMap[y * 32 + x] && boxStartX != -1) {
+                    addNewRowBox(boxStartX, y, x - boxStartX)                   // close the box
+                    boxStartX = -1
+                }
+            }
+            if (boxStartX != -1) addNewRowBox(boxStartX, y, x - boxStartX)   // close the box
+        }
+        
+        for (let y = 0; y < 32; y++) {
+            for (let x = 0; x < 32; x++) {
+                let box = wallBoxes[y * 32 + x]
+                if (box) {
+                    let bw = box[0]
+                    let bh = box[1]
+                    this.box2dBody.createFixture({
+                        shape: planck.Box(bw / 2, bh / 2, planck.Vec2(-16 + bw/2 + x, -16 + bh/2 + y)),
+                        friction: 0,
+                        restitution: 0,
+                    })
+                }
+
+            }
+        }
+
+
     }
 
     static getTileAt(x, y) {
