@@ -1,6 +1,9 @@
-class Cop extends Phaser.GameObjects.Sprite {
+class Cop extends Vehicle {
     constructor(scene, x, y, texture="cop") {
         super(scene, 0, 0, texture)
+
+        this.health = 20
+
         scene.add.existing(this)
         this.scene = scene
         this.setDepth(10)
@@ -44,38 +47,44 @@ class Cop extends Phaser.GameObjects.Sprite {
     }
 
     physicsUpdate(time, dt) {
+        if (this.checkDead()) return
+
         // car state
         let pos = this.box2dBody.getPosition()
         let vel = this.box2dBody.getLinearVelocity()
         let angleDiff = getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
         let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0)
 
-        // target
-        let carPos = this.scene.car.box2dBody.getPosition()
-        let distToCar = carPos.clone().sub(pos)
-        let targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
-
-
-        // process key inputs
-        let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
-        let fowardForce = this.wheelAcc * Math.min(Math.max(targetDist / this.followDist - 1, 1), this.maxTopSpeed / this.topSpeed)
-        fowardForce *= Math.min(Math.max(2 - targetDist / this.nearDist, 1), this.nearTopSpeed / this.topSpeed)
-
-        // wheel speed
-        this.wheelSpeed += (fowardForce * (1 - 0.15 * slidePercent) - 
-                            this.wheelSpeed * this.wheelAcc / this.topSpeed) * dt
-
-
-        // Car steering
-        let turnRadius = this.turnRadius * Math.min(0.1, 1)
-        let maxRotDelta = speed / turnRadius * dt
-        let rotDelta = getAngularDiff(Math.atan2(distToCar.y, distToCar.x), this.rotation)
-        rotDelta = Math.max(Math.min(rotDelta, maxRotDelta), -maxRotDelta)
-
-        this.rotation += rotDelta    // fix to limit maximum turn rate to speed / turn radius
+        if (this.scene.car) {
+            // target
+            let carPos = this.scene.car.box2dBody.getPosition()
+            let distToCar = carPos.clone().sub(pos)
+            let targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
+    
+    
+            // process key inputs
+            let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
+            let fowardForce = this.wheelAcc * Math.min(Math.max(targetDist / this.followDist - 1, 1), this.maxTopSpeed / this.topSpeed)
+            fowardForce *= Math.min(Math.max(2 - targetDist / this.nearDist, 1), this.nearTopSpeed / this.topSpeed)
+    
+            // wheel speed
+            this.wheelSpeed += (fowardForce * (1 - 0.15 * slidePercent) - 
+                                this.wheelSpeed * this.wheelAcc / this.topSpeed) * dt
+    
+    
+            // Car steering
+            let turnRadius = this.turnRadius * Math.min(0.1, 1)
+            let maxRotDelta = speed / turnRadius * dt
+            let rotDelta = getAngularDiff(Math.atan2(distToCar.y, distToCar.x), this.rotation)
+            rotDelta = Math.max(Math.min(rotDelta, maxRotDelta), -maxRotDelta)
+    
+            this.rotation += rotDelta    // fix to limit maximum turn rate to speed / turn radius
+    
+        } else {
+            this.wheelSpeed = 0
+        }
 
         let groundAcc = this.groundAccStatic * (1 - slidePercent) + this.groundAccKinetic * slidePercent
-
 
         // direction of car
         let dir = [Math.cos(this.rotation), Math.sin(this.rotation)]
@@ -97,21 +106,26 @@ class Cop extends Phaser.GameObjects.Sprite {
         for (let force of forces) this.box2dBody.applyForce(force, pos)
 
         this.box2dBody.setAngularVelocity(0)
-        this.box2dBody.setAngle(this.rotation)    
+        this.box2dBody.setAngle(this.rotation)
+    }
+
+    checkDead() {
+        let targetDist = 0
+        if (this.scene.car) {
+            let pos = this.box2dBody.getPosition()
+            let carPos = this.scene.car.box2dBody.getPosition()
+            let distToCar = carPos.clone().sub(pos)
+            targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
+        }
+
+        if (this.health < 0 || targetDist > 96) {
+            this.destroy()
+            return true
+        }
+        return false
     }
 
     update(time, dt) {
-        // kill condition
-        let pos = this.box2dBody.getPosition()
-        let carPos = this.scene.car.box2dBody.getPosition()
-        let distToCar = carPos.clone().sub(pos)
-        let targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
-        if (targetDist > 96) {
-            
-            this.destroy()
-            return
-        }
-
         // visual smoothness here
         let aproxPos = this.box2dBody.getPosition().clone()
         let deltaPos = this.box2dBody.getLinearVelocity().clone()

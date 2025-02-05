@@ -1,4 +1,4 @@
-class Car extends Phaser.GameObjects.Sprite {
+class Car extends Vehicle {
     constructor(scene, x, y, texture="car") {
         super(scene, 0, 0, texture)
         scene.add.existing(this)
@@ -40,6 +40,11 @@ class Car extends Phaser.GameObjects.Sprite {
 
 
     physicsUpdate(time, dt) {
+        if (this.checkDead()) {
+            World.PlayScene.onGameOver()
+            return
+        }
+
         // car state
         let pos = this.box2dBody.getPosition()
         let vel = this.box2dBody.getLinearVelocity()
@@ -92,6 +97,16 @@ class Car extends Phaser.GameObjects.Sprite {
 
         this.box2dBody.setAngularVelocity(0)
         this.box2dBody.setAngle(this.rotation)
+
+        // console.log(`CAR HEATH: ${this.health}`)
+    }
+
+    checkDead() {
+        if (this.health < 0) {
+            this.destroy()
+            return true
+        }
+        return false
     }
 
     update(time, dt) {
@@ -107,7 +122,8 @@ class Car extends Phaser.GameObjects.Sprite {
 
     destroy() {
         this.scene.world.destroyBody(this.box2dBody)
-        this.box2dBody = null
+        delete this.scene.car
+        delete this.box2dBody
         super.destroy()
     }
 }

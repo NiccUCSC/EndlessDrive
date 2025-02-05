@@ -64,8 +64,22 @@ class Play extends Phaser.Scene {
     onBeginContact(contact) {
         const fixtureA = contact.getFixtureA()
         const fixtureB = contact.getFixtureB()
-        const objectA = fixtureA.getBody().parent
-        const objectB = fixtureB.getBody().parent
+        const bodyA = fixtureA.getBody()
+        const bodyB = fixtureB.getBody()
+        const objectA = bodyA.parent
+        const objectB = bodyB.parent
+        const velocityA = bodyA.getLinearVelocity()
+        const velocityB = bodyB.getLinearVelocity()
+        const relativeVelocity = velocityA.clone().sub(velocityB)
+
+        const manifold = contact.getManifold()
+        const normal = manifold.localNormal
+        // const impactVelocity = relativeVelocity.x * normal.x + relativeVelocity.y * normal.y
+        const impactVelocity = Math.sqrt(relativeVelocity.x**2 + relativeVelocity.y**2)
+
+    
+        // // Calculate the impact velocity (dot product of relative velocity and contact normal)
+        // const impactVelocity = relativeVelocity.dot(normal)
 
         let getInstance = (type) => {
             if (objectA instanceof type) return {obj: objectA, fix: fixtureA}
@@ -88,11 +102,14 @@ class Play extends Phaser.Scene {
                 break
             case "wall":
                 console.log("CAR HIT WALL")
+                car.obj.impact(impactVelocity, "wall")
                 break   
             }
             break
         case values.Cop | values.Car:
             console.log("COP HIT CAR")
+            cop.obj.impact(impactVelocity, "car")
+            car.obj.impact(impactVelocity, "cop")
             break
         }
     }
@@ -128,7 +145,7 @@ class Play extends Phaser.Scene {
     }
 
     physicsUpdate(time, dt) {       // time since last update, world step time
-        this.car.physicsUpdate(time, dt)
+        if (this.car) this.car.physicsUpdate(time, dt)
         for (let cop of this.cops) cop.physicsUpdate(time, dt)
         RoadTile.physicsUpdate(time, dt)
     }
@@ -146,10 +163,15 @@ class Play extends Phaser.Scene {
         }
 
 
-        this.car.update(time, dt)
+        if (this.car) this.car.update(time, dt)
         for (let cop of this.cops) cop.update(time, dt)
 
         WorldCamera.update(time, dt)
+    }
+
+    onGameOver() {
+        console.log("GAME OVER")
+
     }
 }
 

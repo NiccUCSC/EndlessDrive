@@ -38,7 +38,6 @@ class RoadTile extends WorldTile {
         switch (type) {
         case "intersection":
             let chance = Math.random()
-            console.log(chance)
             if ((x || y) && chance < 0.5) this.scene.generateCop(x * 32, y * 32)
             break
         }
