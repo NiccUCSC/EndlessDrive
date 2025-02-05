@@ -106,13 +106,15 @@ class RoadTile extends WorldTile {
             type: "static",
             position: planck.Vec2(x * 32, y * 32),
         })
+        this.box2dBody.parent = this
 
-        this.box2dBody.createFixture({
+        this.enterSensor = this.box2dBody.createFixture({
             shape: planck.Box(13, 13),
             friction: 0,
             restitution: 0,
             isSensor: true,
         })
+        this.enterSensor.name = "enterSensor"
 
         let wallBoxes = RoadTile.wallBoxes[this.type]
         for (let i of Object.keys(wallBoxes)) {
@@ -121,11 +123,12 @@ class RoadTile extends WorldTile {
             let box = wallBoxes[i]
             let bw = box[0]
             let bh = box[1]
-            this.box2dBody.createFixture({
+            let wall = this.box2dBody.createFixture({
                 shape: planck.Box(bw / 2, bh / 2, planck.Vec2(-16 + bw/2 + x, -16 + bh/2 + y)),
                 friction: 0,
                 restitution: 0,
             })
+            wall.name = "wall"
         }
     }
 

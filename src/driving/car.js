@@ -19,10 +19,11 @@ class Car extends Phaser.Physics.Matter.Sprite {
             filterCategoryBits: scene.VEHICAL_CATEGORY || scene.PLAYER_CATEGORY,
         })
         this.box2dBody.setMassData({
-            mass: 3,
+            mass: 2,
             center: planck.Vec2(0, 0),
             I: 1,
         })
+        this.box2dBody.parent = this
 
 
         this.steering = 0   // 1 = right, -1 = left, 0 = straigt
@@ -86,7 +87,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
         velDir.normalize()
 
         let forces = [
-            slideDir.mul(slideForce * 3),
+            slideDir.mul(slideForce * 2),
         ]
 
         for (let force of forces) this.box2dBody.applyForce(force, pos)

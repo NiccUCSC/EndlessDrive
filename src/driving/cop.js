@@ -11,6 +11,7 @@ class Cop extends Phaser.Physics.Matter.Sprite {
             type: "dynamic",
             position: planck.Vec2(x, y),
         })
+        this.box2dBody.parent = this
         this.box2dBody.createFixture({
             shape: planck.Box(0.95, 0.45),
             friction: 0,

@@ -12,6 +12,8 @@ class Play extends Phaser.Scene {
         this.worldTimeSinceUpdate = 0
         this.worldUpdateTime = 1 / 64
         this.worldTimeScale = 1
+        this.world.on("begin-contact", this.onBeginContact)
+
         this.debugGraphics = this.add.graphics()
         this.VEHICAL_CATEGORY = 0x0001
         this.COP_CAR_CATEGORY = 0x0002
@@ -69,6 +71,42 @@ class Play extends Phaser.Scene {
         })
 
 
+    }
+
+    onBeginContact(contact) {
+        const fixtureA = contact.getFixtureA()
+        const fixtureB = contact.getFixtureB()
+        const objectA = fixtureA.getBody().parent
+        const objectB = fixtureB.getBody().parent
+
+        let getInstance = (type) => {
+            if (objectA instanceof type) return {obj: objectA, fix: fixtureA}
+            if (objectB instanceof type) return {obj: objectB, fix: fixtureB}
+            return null
+        }
+
+        let values = { RoadTile: 0x1, Car: 0x2, Cop: 0x4 }
+        let tile = getInstance(RoadTile)
+        let car = getInstance(Car)
+        let cop = getInstance(Cop)
+        let key = !!tile * values.RoadTile | !!car * values.Car | !!cop * values.Cop
+        
+
+        switch (key) {
+        case values.RoadTile | values.Car:
+            switch (tile.fix.name) {
+            case "enterSensor":
+                console.log(`CAR ENTER TILE <${tile.obj.worldPos[0]}, ${tile.obj.worldPos[1]}>`)
+                break
+            case "wall":
+                console.log("CAR HIT WALL")
+                break   
+            }
+            break
+        case values.Cop | values.Car:
+            console.log("COP HIT CAR")
+            break
+        }
     }
 
     generateCop(x, y) {
