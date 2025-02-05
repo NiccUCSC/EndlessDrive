@@ -22,7 +22,7 @@ class World {
         this.debugKey.on('down', () => {
             playScene.debugMode = !playScene.debugMode
             if (!playScene.debugMode) playScene.debugGraphics.clear()
-            console.log(playScene.debugMode)
+            console.log(`Debug Mode = ${playScene.debugMode}`)
         })
     
         this.timeScaleUpKey.on('down', () => {
@@ -34,6 +34,7 @@ class World {
             playScene.worldTimeScale -= 1 / 8
             console.log(`TIME SCALE = ${playScene.worldTimeScale}`)
         })
+        
     }
 
 }

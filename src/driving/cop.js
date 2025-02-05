@@ -31,11 +31,11 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         })
 
         this.wheelSpeed = 0
-        this.wheelAcc = 4
+        this.wheelAcc = 10
         this.topSpeed = 15          // top speed when close
         this.maxTopSpeed = 40       // top speed when at follow dist
         this.nearTopSpeed = 25      // go faster when close
-        this.followDist = 15
+        this.followDist = 10
         this.nearDist = 10
 
         this.turnRadius = 10

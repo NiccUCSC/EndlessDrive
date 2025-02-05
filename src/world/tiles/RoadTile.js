@@ -7,10 +7,13 @@ class RoadTile extends WorldTile {
         turn02: [0, 1, 1, 0],
         turn03: [0, 0, 1, 1],
         turn04: [1, 0, 0, 1],
+        emptycliff: [0, 0, 0, 0],
     }
 
     static types = ["intersection", "straight01", "straight02", 
-                    "turn01", "turn02", "turn03", "turn04"]
+                    "turn01", "turn02", "turn03", "turn04", "emptycliff"]
+    
+    static wallBoxes = {}   // "contains a precomputed list of wall collison boxes for every road type"
 
     static generation = 0
 
@@ -20,23 +23,64 @@ class RoadTile extends WorldTile {
         for (let i = 0; i < this.types.length; i++) new this(i, 0, this.types[i])
     }
 
-    constructor(x, y, layer="intersection") {
-        super(x, y, "multiroad", layer)
+    constructor(x, y, type="intersection") {
+        super(x, y, "multiroad", type)
 
+        this.type = type
         this.worldPos = [x, y]  // tile coordinates
-
-        this.connections = RoadTile.connections[layer] || [0, 0, 0, 0]
-
+        this.connections = RoadTile.connections[type] || [0, 0, 0, 0]
         this.generation = RoadTile.generation
 
         RoadTile.alive.add(this)
 
-        // generateTileCollisionBoxes(this, x, y, layer)
 
         this.generateWalls(x, y)
 
         if (RoadTile.generation && Math.random() < 0.1) this.scene.generateCop(x * 32, y * 32)
     }
+
+    // precomputes the tile wall hitboxes for every tile type
+    static GenerateWallBoxes() {
+        let scene = World.PlayScene
+        let map = scene.make.tilemap({key: "multiroad", tileWidth: 32, tileHeight: 32})
+        let tileset = map.addTilesetImage("Tileset01", "tileset", 16, 16, 1, 2)
+
+        for (let type of this.types) {
+            let layer = map.createLayer(type, tileset)
+
+            let wallMap = []
+            let wallBoxes = []   // { y * 32 + x = width }
+
+            layer.forEachTile(tile => wallMap[tile.y * 32 + tile.x] = tile.index == 34) 
+
+            let addNewRowBox = (x, y, width) => {
+                let height = 1
+                let boxBelow = wallBoxes[(y+1) * 32 + x]
+                if (boxBelow && boxBelow[0] == width) {
+                    delete wallBoxes[(y+1) * 32 + x]
+                    height = boxBelow[1] + 1
+                }
+                wallBoxes[y * 32 + x] = [width, height]
+            }
+
+            for (let y = 32 - 1; y >= 0; y--) {
+                let boxStartX = -1
+                let x = 0
+                for (; x < 32; x++) {
+                    if (wallMap[y * 32 + x] && boxStartX == -1) boxStartX = x           // start the box
+                    if (!wallMap[y * 32 + x] && boxStartX != -1) {
+                        addNewRowBox(boxStartX, y, x - boxStartX)                   // close the box
+                        boxStartX = -1
+                    }
+                }
+                if (boxStartX != -1) addNewRowBox(boxStartX, y, x - boxStartX)   // close the box
+            }
+
+            this.wallBoxes[type] = wallBoxes
+        }
+    }
+
+
 
     generateWalls(x, y) {
         this.box2dBody = this.scene.world.createBody({
@@ -51,51 +95,18 @@ class RoadTile extends WorldTile {
             isSensor: true,
         })
 
-        let wallMap = []
-        let wallBoxes = []   // { y * 32 + x = width }
-        for (let y = 0; y < 32; y++) wallMap
-
-        this.layer.forEachTile(tile => {
-            wallMap[tile.y * 32 + tile.x] = tile.index == 34
-        })
-
-        let addNewRowBox = (x, y, width) => {
-            let height = 1
-            let boxBelow = wallBoxes[(y+1) * 32 + x]
-            if (boxBelow && boxBelow[0] == width) {
-                wallBoxes[(y+1) * 32 + x] = null
-                height = boxBelow[1] + 1
-            }
-            wallBoxes[y * 32 + x] = [width, height]
-        }
-
-        for (let y = 32 - 1; y >= 0; y--) {
-            let boxStartX = -1
-            let x = 0
-            for (; x < 32; x++) {
-                if (wallMap[y * 32 + x] && boxStartX == -1) boxStartX = x           // start the box
-                if (!wallMap[y * 32 + x] && boxStartX != -1) {
-                    addNewRowBox(boxStartX, y, x - boxStartX)                   // close the box
-                    boxStartX = -1
-                }
-            }
-            if (boxStartX != -1) addNewRowBox(boxStartX, y, x - boxStartX)   // close the box
-        }
-        
-        for (let y = 0; y < 32; y++) {
-            for (let x = 0; x < 32; x++) {
-                let box = wallBoxes[y * 32 + x]
-                if (box) {
-                    let bw = box[0]
-                    let bh = box[1]
-                    this.box2dBody.createFixture({
-                        shape: planck.Box(bw / 2, bh / 2, planck.Vec2(-16 + bw/2 + x, -16 + bh/2 + y)),
-                        friction: 0,
-                        restitution: 0,
-                    })
-                }
-
-            }
+        let wallBoxes = RoadTile.wallBoxes[this.type]
+        for (let i of Object.keys(wallBoxes)) {
+            let x = i % 32
+            let y = (i - x) / 32
+            let box = wallBoxes[i]
+            let bw = box[0]
+            let bh = box[1]
+            this.box2dBody.createFixture({
+                shape: planck.Box(bw / 2, bh / 2, planck.Vec2(-16 + bw/2 + x, -16 + bh/2 + y)),
+                friction: 0,
+                restitution: 0,
+            })
         }
     }
 
@@ -104,7 +115,6 @@ class RoadTile extends WorldTile {
             if (tile.worldPos[0] == x && tile.worldPos[1] == y) 
                 return tile
         }
-
         return null
     }
 
@@ -187,13 +197,10 @@ class RoadTile extends WorldTile {
 
 
     destroy() {
-        // console.log(this)
         this.scene.world.destroyBody(this.box2dBody)
         this.box2dBody = null
-
         RoadTile.alive.delete(this)
         super.destroy()
-        // console.log(RoadTile.alive)
     }
 
 }

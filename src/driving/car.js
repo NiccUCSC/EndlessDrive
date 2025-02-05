@@ -31,7 +31,7 @@ class Car extends Phaser.Physics.Matter.Sprite {
         this.wheelAcc = 20
         this.topSpeed = 32
 
-        this.turnRadius = 10
+        this.turnRadius = 10.5
         this.groundAccStatic = 80
         this.groundAccKinetic = 55
 

@@ -43,6 +43,8 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        RoadTile.GenerateWallBoxes()
+
         this.car = new Car(this, 0, 0)
         this.cops = new Set([
             new Cop(this, -40, 0),
@@ -65,6 +67,7 @@ class Play extends Phaser.Scene {
                 if (isCar(pair.bodyB) && isTile(pair.bodyA)) pair.bodyA.parentTile.generateNext()
             })
         })
+
 
     }
 
