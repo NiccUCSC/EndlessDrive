@@ -22,17 +22,11 @@ class WorldTile {
         this.body.parentTile = this
 
         this.setPosition(x, y)
-
     }
 
     setPosition(x, y) {
         this.layer.setPosition((x-0.5) * WorldTile.gridPixelSize, (y-0.5) * WorldTile.gridPixelSize)
     }
-
-    // setRotation(dir) {
-    //     this.layer.setRotation(Math.PI * dir / 2)
-    // }
-
 
     destroy() {
         this.map.destroy()

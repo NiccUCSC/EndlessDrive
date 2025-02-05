@@ -38,7 +38,12 @@ class RoadTile extends WorldTile {
 
         this.generateWalls(x, y)
 
-        if (RoadTile.generation && Math.random() < 0.1) this.scene.generateCop(x * 32, y * 32)
+        switch (type) {
+        case "intersection":
+            if (RoadTile.generation && Math.random() < 0.5) this.scene.generateCop(x * 32, y * 32)
+            break
+        }
+
     }
 
     static init() {
