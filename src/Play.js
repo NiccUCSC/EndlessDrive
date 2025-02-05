@@ -78,6 +78,7 @@ class Play extends Phaser.Scene {
     physicsUpdate(time, dt) {       // time since last update, world step time
         this.car.physicsUpdate(time, dt)
         for (let cop of this.cops) cop.physicsUpdate(time, dt)
+        RoadTile.physicsUpdate(time, dt)
     }
 
     update(time, dt) {
@@ -99,8 +100,6 @@ class Play extends Phaser.Scene {
         for (let cop of this.cops) cop.update(time, dt)
 
         WorldCamera.update(time, dt)
-
-        RoadTile.update(time, dt)
     }
 }
 

@@ -1,13 +1,13 @@
 class RoadTile extends WorldTile {
     static connections = {  // [right, down, left, up]
-        intersection: [1, 1, 1, 1],
-        straight01: [1, 0, 1, 0],
-        straight02: [0, 1, 0, 1],
-        turn01: [1, 1, 0, 0],
-        turn02: [0, 1, 1, 0],
-        turn03: [0, 0, 1, 1],
-        turn04: [1, 0, 0, 1],
-        emptycliff: [0, 0, 0, 0],
+        intersection:       [1, 1, 1, 1],
+        straight01:         [1, 0, 1, 0],
+        straight02:         [0, 1, 0, 1],
+        turn01:             [1, 1, 0, 0],
+        turn02:             [0, 1, 1, 0],
+        turn03:             [0, 0, 1, 1],
+        turn04:             [1, 0, 0, 1],
+        emptycliff:         [0, 0, 0, 0],
     }
 
     static types = ["intersection", "straight01", "straight02", 
@@ -35,7 +35,6 @@ class RoadTile extends WorldTile {
 
         RoadTile.alive.add(this)
 
-
         this.generateWalls(x, y)
 
         switch (type) {
@@ -47,14 +46,14 @@ class RoadTile extends WorldTile {
     }
 
     static init() {
-        this.spawnChances = {"intersection": 10,
-            "straight01": 20,
-            "straight02": 20, 
+        this.spawnChances = {"intersection": 5,
+            "straight01": 10,
+            "straight02": 10, 
             "turn01": 5, 
             "turn02": 5, 
             "turn03": 5, 
             "turn04": 5, 
-            "emptycliff": 40,
+            "emptycliff": 60,
         }
 
         this.GenerateWallBoxes()
@@ -99,6 +98,7 @@ class RoadTile extends WorldTile {
 
             this.wallBoxes[type] = wallBoxes
         }
+        map.destroy()
     }
 
     generateWalls(x, y) {
@@ -137,18 +137,24 @@ class RoadTile extends WorldTile {
         return null
     }
 
+    prune() {
+        let camTileX = Math.round(WorldCamera.cam.worldView.centerX / 32 / 16)
+        let camTileY = Math.round(WorldCamera.cam.worldView.centerY / 32 / 16)
+        let x = this.worldPos[0]
+        let y = this.worldPos[1]
+        let dead = Math.abs(x - camTileX) > 2 || Math.abs(y - camTileY) > 2
+        if (dead) this.destroy()
+        return dead
+    }
+
     static deleteOld() {
-        for (let tile of this.alive)
-            if (this.generation - tile.generation > 4) 
-                tile.destroy()
+        for (let tile of this.alive) tile.prune()                
     }
 
     static generateAt(x, y) {
         const curr = this.getTileAt(x, y)
-        if (curr) {                                             // if tile is occupied
-            if (this.generation - curr.generation < 3) return   // dont override parents
-            else curr.destroy()                                 // remove curr from gene pool
-        }
+        if (curr && !curr.prune()) return
+
 
         // get the constraints of the tile
         let connections = [-1, -1, -1, -1]                      // -1 means free
@@ -195,8 +201,13 @@ class RoadTile extends WorldTile {
     generateNext() {
         RoadTile.generation++
 
-        let deltas = [[1, 0], [0, 1], [-1, 0], [0, -1],     // 1 step
-                      [1, 1], [1, -1], [-1, -1], [-1, 1]]   // 2 step
+        let deltas = [[1, 0], [0, 1], [-1, 0], [0, -1],         // 1 step
+                      [1, 1], [1, -1], [-1, -1], [-1, 1],       // 2 step
+                      [2, 0], [0, 2], [-2, 0], [0, -2],         // 3 step
+                      [2, 1], [1, 2], [-2, 1], [1, -2],         // 4 step
+                      [2, -1], [-1, 2], [-2, -1], [-1, -2],     // 5 step
+                      [2, 2], [2, -2], [-2, -2], [-2, 2],       // 6 step
+                    ]   
 
         for (let delta of deltas) {
             RoadTile.addToSpawnQueue([this.worldPos[0] + delta[0], this.worldPos[1] + delta[1]])
@@ -213,6 +224,11 @@ class RoadTile extends WorldTile {
     static addToSpawnQueue(pos) {
         for (let elem of this.spawnQueue) if (pos[0] == elem[0] && pos[1] == elem[1]) return
         this.spawnQueue.push(pos)
+    }
+
+    static physicsUpdate(time, dt) {
+        const newTilePos = this.spawnQueue.shift()
+        if (newTilePos) this.generateAt(...newTilePos)
     }
 
     static update(time, dt) {

@@ -43,7 +43,7 @@ class World {
         })
     
         this.zoomOutKey.on('down', () => {
-            WorldCamera.vertTiles = Math.min(WorldCamera.vertTiles + 32, 256)
+            WorldCamera.vertTiles = Math.min(WorldCamera.vertTiles + 32, 384)
             console.log(`Vertical Zoom = ${WorldCamera.vertTiles}`)
         })
         
