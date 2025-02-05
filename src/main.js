@@ -11,13 +11,6 @@ let config = {
         mode: Phaser.Scale.RESIZE, // Fit the game to the screen
         autoCenter: Phaser.Scale.CENTER_BOTH // Center the game canvas
     },
-    physics: {
-        default: 'matter',
-        matter: {
-            debug: false,
-            gravity: { x: 0, y: 0 }
-        }
-    },
     scene: [ Play ]
 }
 

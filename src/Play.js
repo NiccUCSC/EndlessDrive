@@ -13,6 +13,7 @@ class Play extends Phaser.Scene {
         this.worldUpdateTime = 1 / 64
         this.worldTimeScale = 1
         this.world.on("begin-contact", this.onBeginContact)
+        this.world.on("end-contact", this.onEndContact)
 
         this.debugGraphics = this.add.graphics()
         this.VEHICAL_CATEGORY = 0x0001
@@ -52,26 +53,13 @@ class Play extends Phaser.Scene {
             new Cop(this, -40, 0),
         ])
 
-
         // RoadTile.createTest()
         const tile = new RoadTile(0, 0)
-        // tile.generateNext()
 
         WorldCamera.init(this)
         WorldCamera.startFollow(this.car)
-
-
-        // this.matter.world.on('collisionstart', (event) => {
-        //     let isCar = body => { return body.gameObject instanceof Car }
-        //     let isTile = body => { return body.parentTile instanceof RoadTile }
-        //     event.pairs.forEach(pair => {
-        //         if (isCar(pair.bodyA) && isTile(pair.bodyB)) pair.bodyB.parentTile.generateNext()
-        //         if (isCar(pair.bodyB) && isTile(pair.bodyA)) pair.bodyA.parentTile.generateNext()
-        //     })
-        // })
-
-
     }
+
 
     onBeginContact(contact) {
         const fixtureA = contact.getFixtureA()
@@ -90,7 +78,6 @@ class Play extends Phaser.Scene {
         let car = getInstance(Car)
         let cop = getInstance(Cop)
         let key = !!tile * values.RoadTile | !!car * values.Car | !!cop * values.Cop
-        
 
         switch (key) {
         case values.RoadTile | values.Car:
@@ -110,6 +97,32 @@ class Play extends Phaser.Scene {
         }
     }
 
+    onEndContact(contact) {
+        const fixtureA = contact.getFixtureA()
+        const fixtureB = contact.getFixtureB()
+        const objectA = fixtureA.getBody().parent
+        const objectB = fixtureB.getBody().parent
+
+        let getInstance = (type) => {
+            if (objectA instanceof type) return {obj: objectA, fix: fixtureA}
+            if (objectB instanceof type) return {obj: objectB, fix: fixtureB}
+            return null
+        }
+
+        let values = { RoadTile: 0x1, Car: 0x2, Cop: 0x4 }
+        let tile = getInstance(RoadTile)
+        let car = getInstance(Car)
+        let cop = getInstance(Cop)
+        let key = !!tile * values.RoadTile | !!car * values.Car | !!cop * values.Cop
+
+        switch (key) {
+        case values.Cop | values.Car:
+            console.log("COP UNHIT CAR")
+            break
+        }
+    }
+
+
     generateCop(x, y) {
         this.cops.add(new Cop(this, x, y))
     }
@@ -123,8 +136,6 @@ class Play extends Phaser.Scene {
     update(time, dt) {
         time /= 1000
         dt /= 1000
-        this.matter.world.engine.timing.timeScale = dt * World.TimeScale
-
 
         this.worldTimeSinceUpdate += dt * this.worldTimeScale
         while (this.worldTimeSinceUpdate > this.worldUpdateTime) {

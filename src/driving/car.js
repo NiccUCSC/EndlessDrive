@@ -1,6 +1,6 @@
-class Car extends Phaser.Physics.Matter.Sprite {
+class Car extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture="car") {
-        super(scene.matter.world, 0, 0, texture)
+        super(scene, 0, 0, texture)
         scene.add.existing(this)
         this.scene = scene
         this.setDepth(10)
@@ -40,8 +40,6 @@ class Car extends Phaser.Physics.Matter.Sprite {
 
 
     physicsUpdate(time, dt) {
-
-
         // car state
         let pos = this.box2dBody.getPosition()
         let vel = this.box2dBody.getLinearVelocity()

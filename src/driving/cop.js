@@ -1,11 +1,10 @@
-class Cop extends Phaser.Physics.Matter.Sprite {
+class Cop extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture="cop") {
-        super(scene.matter.world, 0, 0, texture)
+        super(scene, 0, 0, texture)
         scene.add.existing(this)
         this.scene = scene
         this.setDepth(10)
         this.setOrigin(0.5, 0.5)
-
 
         this.box2dBody = this.scene.world.createBody({
             type: "dynamic",
