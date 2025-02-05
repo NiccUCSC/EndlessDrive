@@ -106,6 +106,16 @@ class Play extends Phaser.Scene {
                 break   
             }
             break
+        case values.RoadTile | values.Cop:
+            switch (tile.fix.name) {
+            case "enterSensor":
+                break
+            case "wall":
+                console.log("COP HIT WALL")
+                cop.obj.impact(impactVelocity, "wall")
+                break   
+            }
+            break
         case values.Cop | values.Car:
             console.log("COP HIT CAR")
             cop.obj.impact(impactVelocity, "car")
