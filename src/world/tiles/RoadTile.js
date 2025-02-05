@@ -17,8 +17,6 @@ class RoadTile extends WorldTile {
     
     static wallBoxes = {}   // "contains a precomputed list of wall collison boxes for every road type"
 
-    static generation = 0
-
     static alive = new Set()
 
     static createTest() {
@@ -31,7 +29,6 @@ class RoadTile extends WorldTile {
         this.type = type
         this.worldPos = [x, y]  // tile coordinates
         this.connections = RoadTile.connections[type] || [0, 0, 0, 0]
-        this.generation = RoadTile.generation
         this.needsToGenerate = false
 
         RoadTile.alive.add(this)
@@ -40,7 +37,9 @@ class RoadTile extends WorldTile {
 
         switch (type) {
         case "intersection":
-            if (RoadTile.generation && Math.random() < 0.5) this.scene.generateCop(x * 32, y * 32)
+            let chance = Math.random()
+            console.log(chance)
+            if ((x || y) && chance < 0.5) this.scene.generateCop(x * 32, y * 32)
             break
         }
 
@@ -203,8 +202,6 @@ class RoadTile extends WorldTile {
     }
 
     generateNext() {
-        RoadTile.generation++
-
         let deltas = [[1, 0], [0, 1], [-1, 0], [0, -1],         // 1 step
                       [1, 1], [1, -1], [-1, -1], [-1, 1],       // 2 step
                       [2, 0], [0, 2], [-2, 0], [0, -2],         // 3 step

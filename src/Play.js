@@ -98,7 +98,6 @@ class Play extends Phaser.Scene {
             case "enterSensor":
                 console.log(`CAR ENTER TILE <${tile.obj.worldPos[0]}, ${tile.obj.worldPos[1]}>`)
                 tile.obj.needsToGenerate = true
-                // tile.obj.generateNext()
                 break
             case "wall":
                 console.log("CAR HIT WALL")

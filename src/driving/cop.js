@@ -107,7 +107,8 @@ class Cop extends Phaser.Physics.Matter.Sprite {
         let carPos = this.scene.car.box2dBody.getPosition()
         let distToCar = carPos.clone().sub(pos)
         let targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
-        if (targetDist > 64) {
+        if (targetDist > 96) {
+            
             this.destroy()
             return
         }
