@@ -32,6 +32,7 @@ class RoadTile extends WorldTile {
         this.worldPos = [x, y]  // tile coordinates
         this.connections = RoadTile.connections[type] || [0, 0, 0, 0]
         this.generation = RoadTile.generation
+        this.needsToGenerate = false
 
         RoadTile.alive.add(this)
 
@@ -230,6 +231,12 @@ class RoadTile extends WorldTile {
     }
 
     static physicsUpdate(time, dt) {
+        for (let tile of this.alive) {
+            if (tile.needsToGenerate) {
+                tile.generateNext()
+                tile.needsToGenerate = false
+            }
+        }
         const newTilePos = this.spawnQueue.shift()
         if (newTilePos) this.generateAt(...newTilePos)
     }

@@ -61,14 +61,14 @@ class Play extends Phaser.Scene {
         WorldCamera.startFollow(this.car)
 
 
-        this.matter.world.on('collisionstart', (event) => {
-            let isCar = body => { return body.gameObject instanceof Car }
-            let isTile = body => { return body.parentTile instanceof RoadTile }
-            event.pairs.forEach(pair => {
-                if (isCar(pair.bodyA) && isTile(pair.bodyB)) pair.bodyB.parentTile.generateNext()
-                if (isCar(pair.bodyB) && isTile(pair.bodyA)) pair.bodyA.parentTile.generateNext()
-            })
-        })
+        // this.matter.world.on('collisionstart', (event) => {
+        //     let isCar = body => { return body.gameObject instanceof Car }
+        //     let isTile = body => { return body.parentTile instanceof RoadTile }
+        //     event.pairs.forEach(pair => {
+        //         if (isCar(pair.bodyA) && isTile(pair.bodyB)) pair.bodyB.parentTile.generateNext()
+        //         if (isCar(pair.bodyB) && isTile(pair.bodyA)) pair.bodyA.parentTile.generateNext()
+        //     })
+        // })
 
 
     }
@@ -97,6 +97,8 @@ class Play extends Phaser.Scene {
             switch (tile.fix.name) {
             case "enterSensor":
                 console.log(`CAR ENTER TILE <${tile.obj.worldPos[0]}, ${tile.obj.worldPos[1]}>`)
+                tile.obj.needsToGenerate = true
+                // tile.obj.generateNext()
                 break
             case "wall":
                 console.log("CAR HIT WALL")
