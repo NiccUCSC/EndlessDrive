@@ -43,7 +43,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        RoadTile.GenerateWallBoxes()
+        RoadTile.init()
 
         this.car = new Car(this, 0, 0)
         this.cops = new Set([

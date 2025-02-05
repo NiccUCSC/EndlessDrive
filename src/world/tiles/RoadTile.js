@@ -13,6 +13,8 @@ class RoadTile extends WorldTile {
     static types = ["intersection", "straight01", "straight02", 
                     "turn01", "turn02", "turn03", "turn04", "emptycliff"]
     
+    static spawnChances = {}    // contains the spawn chance for every segment
+    
     static wallBoxes = {}   // "contains a precomputed list of wall collison boxes for every road type"
 
     static generation = 0
@@ -37,6 +39,20 @@ class RoadTile extends WorldTile {
         this.generateWalls(x, y)
 
         if (RoadTile.generation && Math.random() < 0.1) this.scene.generateCop(x * 32, y * 32)
+    }
+
+    static init() {
+        this.spawnChances = {"intersection": 10,
+            "straight01": 20,
+            "straight02": 20, 
+            "turn01": 5, 
+            "turn02": 5, 
+            "turn03": 5, 
+            "turn04": 5, 
+            "emptycliff": 40,
+        }
+
+        this.GenerateWallBoxes()
     }
 
     // precomputes the tile wall hitboxes for every tile type
@@ -79,8 +95,6 @@ class RoadTile extends WorldTile {
             this.wallBoxes[type] = wallBoxes
         }
     }
-
-
 
     generateWalls(x, y) {
         this.box2dBody = this.scene.world.createBody({
@@ -142,6 +156,8 @@ class RoadTile extends WorldTile {
         }
 
         let validTiles = []
+        let spawnChances = []
+        let totalChance = 0
         let isValid = (tile, connections) => {
             for (let i = 0; i < 4; i++)
                 if (connections[i] != -1 && connections[i] != tile[i]) return false
@@ -150,7 +166,12 @@ class RoadTile extends WorldTile {
 
         for (let tileName of Object.keys(RoadTile.connections)) {
             const tile = RoadTile.connections[tileName]
-            if (isValid(tile, connections)) validTiles.push(tileName)
+            if (isValid(tile, connections)) {
+                validTiles.push(tileName)
+                let chance = RoadTile.spawnChances[tileName]
+                spawnChances.push(chance)
+                totalChance += chance
+            }
         }
 
         if (!validTiles.length) {
@@ -158,7 +179,11 @@ class RoadTile extends WorldTile {
             return
         }
 
-        let nextTile = validTiles[Math.floor(Math.random() * validTiles.length)]
+        let randomNumber = Math.random() * totalChance
+        let index = -1
+        while (randomNumber > spawnChances[++index]) randomNumber -= spawnChances[index]
+
+        let nextTile = validTiles[index]
         new this(x, y, nextTile)
     }
 
@@ -195,12 +220,10 @@ class RoadTile extends WorldTile {
 
     }
 
-
     destroy() {
         this.scene.world.destroyBody(this.box2dBody)
         this.box2dBody = null
         RoadTile.alive.delete(this)
         super.destroy()
     }
-
 }
