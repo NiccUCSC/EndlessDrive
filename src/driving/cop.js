@@ -2,7 +2,7 @@ class Cop extends Vehicle {
     constructor(scene, x, y, texture="cop") {
         super(scene, 0, 0, texture)
 
-        this.health = 20
+        this.health = 40
 
         scene.add.existing(this)
         this.scene = scene
@@ -55,7 +55,7 @@ class Cop extends Vehicle {
         let angleDiff = getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
         let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0)
 
-        if (this.scene.car) {
+        if (this.scene.car.alive) {
             // target
             let carPos = this.scene.car.box2dBody.getPosition()
             let distToCar = carPos.clone().sub(pos)
