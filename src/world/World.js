@@ -2,14 +2,16 @@ class World {
     static TimeScale = 1
     static gameStarted = false
     static gameID = ""
-    static restartDelay = 0.1
-    static timeTillRestart = 15
+    static restartDelay = 0.05
+    static timeTillRestart = 1
 
     static init(playScene) {
         this.PlayScene = playScene
 
         playScene.input.keyboard.on('keydown', (event) => {
-            if (!this.gameStarted && this.timeTillRestart == 0) this.startGame(playScene)
+            if (!this.gameStarted && this.timeTillRestart == 0 && 
+                (this.upKey.isDown || this.downKey.isDown || this.rightKey.isDown || this.leftKey.isDown)
+            ) this.startGame(playScene)
         })
 
         this.interactKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
@@ -33,6 +35,7 @@ class World {
         this.debugKey.on('down', () => {
             playScene.debugMode = !playScene.debugMode
             if (!playScene.debugMode) playScene.debugGraphics.clear()
+            else drawDebugGraphics()
             console.log(`Debug Mode = ${playScene.debugMode}`)
         })
     
@@ -68,7 +71,6 @@ class World {
     }
 
     static update(time, dt) {
-        console.log(this.timeTillRestart)
         if (this.timeTillRestart > 0) this.timeTillRestart = Math.max(this.timeTillRestart - dt, 0)
     }
 
@@ -78,11 +80,15 @@ class World {
         scene.car = new Car(scene, 0, 0)    // place car
         scene.cops = new Set()
         scene.generateCop(-10, 0)
-        let rootTile = new RoadTile(0, 0)                  // place first tile
         WorldCamera.init(scene)
         WorldCamera.startFollow(scene.car)
+        let rootTile = new RoadTile(0, 0)                  // place first tile
+        console.log(rootTile)
+
         rootTile.generateNext()
         RoadTile.emptySpawnQueue()                          // generates all the tiles in spawn queue at once
+
+        console.log(rootTile)
         scene.worldTimeSinceUpdate = 0
         scene.worldUpdateTime = 1 / 64
         scene.worldTimeScale = 0
@@ -99,7 +105,6 @@ class World {
         this.gameStarted = false
         this.gameID = ""
 
-        console.log(scene.children.getChildren())
         let objs = scene.children.getChildren().slice()
         for (let obj of objs) {
             if ((obj instanceof Car) || (obj instanceof Cop))
@@ -107,7 +112,6 @@ class World {
         }
         RoadTile.destroy_all()
 
-        console.log(scene.children.getChildren())
         this.loadGame(scene)
     }
 

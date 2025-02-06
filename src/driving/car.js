@@ -25,7 +25,6 @@ class Car extends Vehicle {
         })
         this.box2dBody.parent = this
 
-
         this.steering = 0   // 1 = right, -1 = left, 0 = straigt
         this.steeringRate = 12
         this.wheelSpeed = 0
@@ -35,6 +34,8 @@ class Car extends Vehicle {
         this.turnRadius = 10.5
         this.groundAccStatic = 80
         this.groundAccKinetic = 55
+
+        console.log(`Car at ${this.box2dBody.getPosition()}`)
 
     }
 
@@ -58,11 +59,9 @@ class Car extends Vehicle {
             steeringForce = World.rightKey.isDown - World.leftKey.isDown
         }
 
-
         // wheel speed
         this.wheelSpeed += (fowardForce * (1 + 0.15 * slidePercent) - 
                             this.wheelSpeed * this.wheelAcc / this.topSpeed) * dt
-
 
         // Car steering
         if (!steeringForce) {  // bring steering back to center when released
@@ -74,8 +73,6 @@ class Car extends Vehicle {
         }
         let angularSpeed = this.steering * (speed + Math.abs(this.wheelSpeed)) / 2 / this.turnRadius
         this.rotation += angularSpeed * dt
-
-
 
         // direction of car
         let dir = [Math.cos(this.rotation), Math.sin(this.rotation)]

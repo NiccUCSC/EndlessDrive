@@ -140,11 +140,13 @@ class RoadTile extends WorldTile {
     }
 
     prune() {
-        let camTileX = Math.round(WorldCamera.cam.worldView.centerX / 32 / 16)
-        let camTileY = Math.round(WorldCamera.cam.worldView.centerY / 32 / 16)
+        let playerPos = World.PlayScene.car.box2dBody.getPosition()
+        let playerTileX = Math.round(playerPos.x / 32)
+        let playerTileY = Math.round(playerPos.y / 32)
+
         let x = this.worldPos[0]
         let y = this.worldPos[1]
-        let dead = Math.abs(x - camTileX) > 2 || Math.abs(y - camTileY) > 2
+        let dead = Math.abs(x - playerTileX) > 2 || Math.abs(y - playerTileY) > 2
         if (dead) this.destroy()
         return dead
     }
