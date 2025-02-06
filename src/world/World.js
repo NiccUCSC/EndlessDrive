@@ -5,6 +5,13 @@ class World {
     static restartDelay = 0.05
     static timeTillRestart = 1
     static randomGen = null // new Phaser.Math.RandomDataGenerator({ seed: 'your-seed-value' })
+    static screenWidth = 640
+    static screenHeight = 480
+    static screenUnit = 640 / 1000
+
+    static initUIScene(uiScene) {
+        this.UIScene = uiScene
+    }
 
     static init(playScene) {
         this.PlayScene = playScene
@@ -73,6 +80,9 @@ class World {
 
     static update(time, dt) {
         if (this.timeTillRestart > 0) this.timeTillRestart = Math.max(this.timeTillRestart - dt, 0)
+        this.screenWidth = this.PlayScene.cameras.main.width
+        this.screenHeight = this.PlayScene.cameras.main.height
+        this.screenUnit = this.screenHeight / 1000
     }
 
     static loadGame(scene) {

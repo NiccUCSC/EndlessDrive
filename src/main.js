@@ -11,7 +11,7 @@ let config = {
         mode: Phaser.Scale.RESIZE, // Fit the game to the screen
         autoCenter: Phaser.Scale.CENTER_BOTH // Center the game canvas
     },
-    scene: [ Play ]
+    scene: [ Play, UI ]
 }
 
 let game = new Phaser.Game(config)

@@ -65,6 +65,8 @@ class Play extends Phaser.Scene {
 
         World.preLoad()
         World.loadGame(this)
+
+        this.scene.launch('uiScene')
     }
 
 
