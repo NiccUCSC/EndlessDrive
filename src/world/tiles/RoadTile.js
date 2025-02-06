@@ -37,7 +37,7 @@ class RoadTile extends WorldTile {
 
         switch (type) {
         case "intersection":
-            let chance = Math.random()
+            let chance = World.randomGen.frac()
             if ((x || y) && chance < 0.5) this.scene.generateCop(x * 32, y * 32)
             break
         }
@@ -194,7 +194,7 @@ class RoadTile extends WorldTile {
             return
         }
 
-        let randomNumber = Math.random() * totalChance
+        let randomNumber = World.randomGen.frac() * totalChance
         let index = -1
         while (randomNumber > spawnChances[++index]) randomNumber -= spawnChances[index]
 

@@ -4,6 +4,7 @@ class World {
     static gameID = ""
     static restartDelay = 0.05
     static timeTillRestart = 1
+    static randomGen = null // new Phaser.Math.RandomDataGenerator({ seed: 'your-seed-value' })
 
     static init(playScene) {
         this.PlayScene = playScene
@@ -76,7 +77,11 @@ class World {
 
     static loadGame(scene) {
         this.gameID = generateGameID(5, 4)
-        console.log(`Game started with ID: ${this.gameID}`)
+        this.randomSeed = stringToSeed(this.gameID)
+        this.randomSeed = 0
+        this.randomGen = new Phaser.Math.RandomDataGenerator({seed: this.randomSeed})
+
+        console.log(`Game started with ID: ${this.gameID}, Seed: ${this.randomSeed}`)
         scene.car = new Car(scene, 0, 0)    // place car
         scene.cops = new Set()
         scene.generateCop(-10, 0)

@@ -8,7 +8,7 @@ function generateGameID(length, segments) {
     let id = ""
     for (let i = 0; i < segments; i++) {
         for (let j = 0; j < length; j++) {
-            let char = chars.charAt(Math.floor(Math.random() * power))
+            let char = chars.charAt(Math.floor(Math.random() * power))  // Do not link to phasers random gen
             id += char
         }
         if (i < segments - 1) id += '-'
@@ -73,4 +73,15 @@ function drawDebugGraphics() {
             }
         }
     }
+}
+
+function stringToSeed(string) {
+    const num = 0x9e3779b97f4a7c15n
+    let hash = 0
+    for (let i = 0; i < string.length; i++) {
+        let charCode = string.charCodeAt(i)
+        hash = (hash << 5) - hash + charCode
+        hash |= 0; 
+    }
+    return (BigInt(hash) * num) & 0xFFFFFFFFFFFFFFFFn
 }
