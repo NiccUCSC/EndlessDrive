@@ -1,21 +1,30 @@
 class World {
     static TimeScale = 1
+    static gameStarted = false
+    static gameID = ""
+    static restartDelay = 0.1
+    static timeTillRestart = 15
 
     static init(playScene) {
         this.PlayScene = playScene
+
+        playScene.input.keyboard.on('keydown', (event) => {
+            if (!this.gameStarted && this.timeTillRestart == 0) this.startGame(playScene)
+        })
 
         this.interactKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
         this.debugKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z)
         this.deselectKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q)
         this.altKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ALT)
         this.shiftKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
+        this.restartKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R)
         
         this.upKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
         this.downKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
         this.leftKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
         this.rightKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
 
-        this.debugKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R)
+        this.debugKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
         this.timeScaleUpKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PERIOD)
         this.timeScaleDownKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.COMMA)
         this.zoomInKey = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CLOSED_BRACKET)
@@ -46,7 +55,60 @@ class World {
             WorldCamera.vertTiles = Math.min(WorldCamera.vertTiles + 32, 384)
             console.log(`Vertical Zoom = ${WorldCamera.vertTiles}`)
         })
-        
+    
+        this.restartKey.on('down', () => {
+            this.resetGame(this.PlayScene)
+            this.timeTillRestart = this.restartDelay
+        })
+
+    }
+
+    static preLoad() {
+        RoadTile.init()
+    }
+
+    static update(time, dt) {
+        console.log(this.timeTillRestart)
+        if (this.timeTillRestart > 0) this.timeTillRestart = Math.max(this.timeTillRestart - dt, 0)
+    }
+
+    static loadGame(scene) {
+        this.gameID = generateGameID(5, 4)
+        console.log(`Game started with ID: ${this.gameID}`)
+        scene.car = new Car(scene, 0, 0)    // place car
+        scene.cops = new Set()
+        scene.generateCop(-10, 0)
+        let rootTile = new RoadTile(0, 0)                  // place first tile
+        WorldCamera.init(scene)
+        WorldCamera.startFollow(scene.car)
+        rootTile.generateNext()
+        RoadTile.emptySpawnQueue()                          // generates all the tiles in spawn queue at once
+        scene.worldTimeSinceUpdate = 0
+        scene.worldUpdateTime = 1 / 64
+        scene.worldTimeScale = 0
+    }
+
+    static startGame(scene) {
+        this.gameStarted = true
+        scene.worldTimeScale = 1
+    }
+
+    static resetGame(scene) {
+        console.log("RESETTING GAME")
+        this.timeTillRestart = this.restartDelay
+        this.gameStarted = false
+        this.gameID = ""
+
+        console.log(scene.children.getChildren())
+        let objs = scene.children.getChildren().slice()
+        for (let obj of objs) {
+            if ((obj instanceof Car) || (obj instanceof Cop))
+                obj.destroy()
+        }
+        RoadTile.destroy_all()
+
+        console.log(scene.children.getChildren())
+        this.loadGame(scene)
     }
 
 }

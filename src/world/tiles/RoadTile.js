@@ -226,6 +226,11 @@ class RoadTile extends WorldTile {
         this.spawnQueue.push(pos)
     }
 
+    static emptySpawnQueue() {
+        let newTilePos
+        while(newTilePos = this.spawnQueue.shift()) this.generateAt(...newTilePos)
+    }
+
     static physicsUpdate(time, dt) {
         for (let tile of this.alive) {
             if (tile.needsToGenerate) {
@@ -252,5 +257,9 @@ class RoadTile extends WorldTile {
         this.box2dBody = null
         RoadTile.alive.delete(this)
         super.destroy()
+    }
+
+    static destroy_all() {
+        for (let tile of this.alive) tile.destroy()
     }
 }

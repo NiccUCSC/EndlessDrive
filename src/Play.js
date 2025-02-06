@@ -4,8 +4,6 @@ class Play extends Phaser.Scene {
     }
 
     init() {
-        // useful variables
-        this.ballStartPos = [width/2, height - height/10]
         World.init(this)
 
         this.world = planck.World(planck.Vec2(0, 0)) // Gravity
@@ -45,7 +43,7 @@ class Play extends Phaser.Scene {
             frameHeight: 64,
             startFrame: 0,
             endFrame: 9
-        });
+        })
         
         this.load.image('tileset', 'ExtrudedTileMap1.png')
         this.load.path = './assets/tiles/'
@@ -54,7 +52,6 @@ class Play extends Phaser.Scene {
         this.load.tilemapTiledJSON('tileStraightRoad', 'StraightRoad01.tmj')
         this.load.tilemapTiledJSON('tileIntersectionRoad', 'IntersectionRoad01.tmj')
         this.load.tilemapTiledJSON('multiroad', 'MultiRoad.tmj')
-
         
     }
 
@@ -62,22 +59,12 @@ class Play extends Phaser.Scene {
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explodeSheet', { start: 0, end: 9 }),
-            frameRate: 5,
+            frameRate: 8,
             repeat: 0
         })
 
-        RoadTile.init()
-
-        this.car = new Car(this, 0, 0)
-        this.cops = new Set([
-            new Cop(this, -40, 0),
-        ])
-
-        // RoadTile.createTest()
-        const tile = new RoadTile(0, 0)
-
-        WorldCamera.init(this)
-        WorldCamera.startFollow(this.car)
+        World.preLoad()
+        World.loadGame(this)
     }
 
 
@@ -92,9 +79,9 @@ class Play extends Phaser.Scene {
         const velocityB = bodyB.getLinearVelocity()
         const relativeVelocity = velocityA.clone().sub(velocityB)
 
-        const manifold = contact.getManifold()
-        const normal = manifold.localNormal
-        // const impactVelocity = relativeVelocity.x * normal.x + relativeVelocity.y * normal.y
+        // const manifold = contact.getManifold()
+        // const normal = manifold.localNormal
+        // // const impactVelocity = relativeVelocity.x * normal.x + relativeVelocity.y * normal.y
         const impactVelocity = Math.sqrt(relativeVelocity.x**2 + relativeVelocity.y**2)
 
     
@@ -117,11 +104,11 @@ class Play extends Phaser.Scene {
         case values.RoadTile | values.Car:
             switch (tile.fix.name) {
             case "enterSensor":
-                console.log(`CAR ENTER TILE <${tile.obj.worldPos[0]}, ${tile.obj.worldPos[1]}>`)
+                // console.log(`CAR ENTER TILE <${tile.obj.worldPos[0]}, ${tile.obj.worldPos[1]}>`)
                 tile.obj.needsToGenerate = true
                 break
             case "wall":
-                console.log("CAR HIT WALL")
+                // console.log("CAR HIT WALL")
                 car.obj.impact(impactVelocity, "wall")
                 break   
             }
@@ -131,13 +118,13 @@ class Play extends Phaser.Scene {
             case "enterSensor":
                 break
             case "wall":
-                console.log("COP HIT WALL")
+                // console.log("COP HIT WALL")
                 cop.obj.impact(impactVelocity, "wall")
                 break   
             }
             break
         case values.Cop | values.Car:
-            console.log("COP HIT CAR")
+            // console.log("COP HIT CAR")
             cop.obj.impact(impactVelocity, "car")
             car.obj.impact(impactVelocity, "cop")
             car.obj.addCollide(cop.obj)
@@ -171,7 +158,6 @@ class Play extends Phaser.Scene {
         }
     }
 
-
     generateCop(x, y) {
         this.cops.add(new Cop(this, x, y))
     }
@@ -185,16 +171,15 @@ class Play extends Phaser.Scene {
     update(time, dt) {
         time /= 1000
         dt /= 1000
-        console.log(this.worldTimeScale)
+        World.update(time, dt)
 
         this.worldTimeSinceUpdate += dt * this.worldTimeScale
         while (this.worldTimeSinceUpdate > this.worldUpdateTime) {
             this.worldTimeSinceUpdate -= this.worldUpdateTime
             this.physicsUpdate(this.worldTimeSinceUpdate, this.worldUpdateTime)
-            this.world.step(this.worldUpdateTime); // Run physics simulation
+            this.world.step(this.worldUpdateTime) // Run physics simulation
             if (this.debugMode) drawDebugGraphics(this, this.world, this.debugGraphics)
         }
-
 
         if (this.car) this.car.update(time, dt)
         for (let cop of this.cops) cop.update(time, dt)
@@ -216,13 +201,12 @@ function drawDebugGraphics(scene, world, graphics) {
 
     // Iterate over all Box2D bodies
     for (let body = world.getBodyList(); body; body = body.getNext()) {
-        const pos = body.getPosition();
-        const angle = body.getAngle(); // Get body's rotation in radians
-
+        const pos = body.getPosition()
+        const angle = body.getAngle() // Get body's rotation in radians
 
         // Convert Box2D world coordinates to Phaser pixels (1m = 16px)
-        const x = pos.x * 16;
-        const y = pos.y * 16;
+        const x = pos.x * 16
+        const y = pos.y * 16
 
         for (let fixture = body.getFixtureList(); fixture; fixture = fixture.getNext()) {
             if (fixture.isSensor() == true) {
@@ -233,35 +217,35 @@ function drawDebugGraphics(scene, world, graphics) {
                 graphics.fillStyle(0x00ff00, 0.2)
             }
 
-            const shape = fixture.getShape();
+            const shape = fixture.getShape()
 
-            if (shape.getType() === 'polygon') { // Polygons & Boxes
+            if (shape.getType() == 'polygon') { // Polygons & Boxes
                 const vertices = shape.m_vertices.map(v => {
                     // Rotate the vertex around (0,0) and apply body's position
-                    const rotatedX = v.x * Math.cos(angle) - v.y * Math.sin(angle);
-                    const rotatedY = v.x * Math.sin(angle) + v.y * Math.cos(angle);
+                    const rotatedX = v.x * Math.cos(angle) - v.y * Math.sin(angle)
+                    const rotatedY = v.x * Math.sin(angle) + v.y * Math.cos(angle)
 
                     return {
                         x: (rotatedX + pos.x) * 16, 
                         y: (rotatedY + pos.y) * 16
-                    };
-                });
+                    }
+                })
 
-                graphics.beginPath();
-                graphics.moveTo(vertices[0].x, vertices[0].y);
+                graphics.beginPath()
+                graphics.moveTo(vertices[0].x, vertices[0].y)
 
                 for (let i = 1; i < vertices.length; i++) {
-                    graphics.lineTo(vertices[i].x, vertices[i].y);
+                    graphics.lineTo(vertices[i].x, vertices[i].y)
                 }
 
-                graphics.closePath();
-                graphics.strokePath();
-                graphics.fillPath();
+                graphics.closePath()
+                graphics.strokePath()
+                graphics.fillPath()
             }
-            else if (shape.getType() === 'circle') { // Circles
-                const radius = shape.m_radius * 16;
-                graphics.strokeCircle(x, y, radius);
-                graphics.fillCircle(x, y, radius);
+            else if (shape.getType() == 'circle') { // Circles
+                const radius = shape.m_radius * 16
+                graphics.strokeCircle(x, y, radius)
+                graphics.fillCircle(x, y, radius)
             }
         }
     }

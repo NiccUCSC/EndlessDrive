@@ -99,7 +99,7 @@ class Car extends Vehicle {
         this.box2dBody.setAngularVelocity(0)
         this.box2dBody.setAngle(this.rotation)
 
-        let frame = Phaser.Math.Clamp(Math.floor((100 - this.health) * 3 / 100), 0, 2)
+        let frame = Phaser.Math.Clamp(Math.floor((100 - this.health) * 3 / 100), 0, 3)
         this.setFrame(frame)
 
         // console.log(`CAR HEATH: ${this.health}`)

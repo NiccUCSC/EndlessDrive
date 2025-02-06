@@ -19,6 +19,7 @@ class WorldTile {
 
     destroy() {
         this.map.destroy()
+        this.map = null
         this.body = undefined
     }
 
