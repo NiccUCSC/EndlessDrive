@@ -35,17 +35,16 @@ class RoadTile extends WorldTile {
 
         this.generateWalls(x, y)
 
-        switch (type) {
-        case "intersection":
-            let chance = World.randomGen.frac()
-            if ((x || y) && chance < 0.5) this.scene.generateCop(x * 32, y * 32)
-            break
-        }
+        let chance = World.randomGen.frac()
+        if (World.PlayScene.cops.length < 2) chance /= 5
+        console.log(chance, RoadTile.copChances[type])
+        if ((x || y) && chance < RoadTile.copChances[type]) this.scene.generateCop(x * 32, y * 32)
 
     }
 
     static init() {
-        this.spawnChances = {"intersection": 5,
+        this.spawnChances = {
+            "intersection": 5,
             "straight01": 10,
             "straight02": 10, 
             "turn01": 5, 
@@ -53,6 +52,17 @@ class RoadTile extends WorldTile {
             "turn03": 5, 
             "turn04": 5, 
             "emptycliff": 60,
+        }
+
+        this.copChances = {
+            "intersection": 0.8,
+            "straight01": 0.2,
+            "straight02": 0.2, 
+            "turn01": 0.1, 
+            "turn02": 0.1, 
+            "turn03": 0.1, 
+            "turn04": 0.1, 
+            "emptycliff": 0,
         }
 
         this.GenerateWallBoxes()

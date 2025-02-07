@@ -92,7 +92,6 @@ class World {
             this.gamePrevPos.x = playerPos.x
             this.gamePrevPos.y = playerPos.y
             this.gameDist += Math.sqrt(dx*dx + dy*dy)
-            console.log(this.gameDist)
             this.gameScore += time *                                                // time
                             (this.gameDist / 1000) *                                // distance
                             (playerVel.x*playerVel.x + playerVel.y*playerVel.y) *   // velocity^2
