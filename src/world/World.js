@@ -3,6 +3,8 @@ class World {
     static gameStarted = false
     static gameID = ""
     static gameScore = 0
+    static gameDist = 0
+    static gamePrevPos = { x: 0, y: 0 }
 
 
     static restartDelay = 0.05
@@ -84,7 +86,17 @@ class World {
     static physicsUpdate(time, dt) {
         if (this.PlayScene.car.alive) {
             let playerVel = this.PlayScene.car.box2dBody.getLinearVelocity()
-            this.gameScore += time * (playerVel.x*playerVel.x + playerVel.y*playerVel.y)
+            let playerPos = this.PlayScene.car.box2dBody.getPosition()
+            let dx = playerPos.x - this.gamePrevPos.x
+            let dy = playerPos.y - this.gamePrevPos.y
+            this.gamePrevPos.x = playerPos.x
+            this.gamePrevPos.y = playerPos.y
+            this.gameDist += Math.sqrt(dx*dx + dy*dy)
+            console.log(this.gameDist)
+            this.gameScore += time *                                                // time
+                            (this.gameDist / 1000) *                                // distance
+                            (playerVel.x*playerVel.x + playerVel.y*playerVel.y) *   // velocity^2
+                            this.PlayScene.worldTimeScale                           // timescale
         }
         this.UIScene.physicsUpdate(time, dt)
     }
@@ -102,6 +114,9 @@ class World {
         this.randomSeed = 0
         this.randomGen = new Phaser.Math.RandomDataGenerator({seed: this.randomSeed})
         this.gameScore = 0
+        this.gameDist = 0
+        this.gamePrevPos = { x: 0, y: 0 }
+
 
         console.log(`Game started with ID: ${this.gameID}, Seed: ${this.randomSeed}`)
         scene.car = new Car(scene, 0, 0)    // place car

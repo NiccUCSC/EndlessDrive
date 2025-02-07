@@ -28,7 +28,6 @@ class UI extends Phaser.Scene {
         let digits = ParseDigits(World.gameScore, this.numDigits)
         for (let i = 0; i < this.numDigits; i++)
             this.numbers[i].setFrame(digits[i])
-        console.log(this.numbers)
     }
 
     update(time, dt) {
