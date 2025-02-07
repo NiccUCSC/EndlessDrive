@@ -2,6 +2,9 @@ class World {
     static TimeScale = 1
     static gameStarted = false
     static gameID = ""
+    static gameScore = 0
+
+
     static restartDelay = 0.05
     static timeTillRestart = 1
     static randomGen = null // new Phaser.Math.RandomDataGenerator({ seed: 'your-seed-value' })
@@ -78,6 +81,14 @@ class World {
         RoadTile.init()
     }
 
+    static physicsUpdate(time, dt) {
+        if (this.PlayScene.car.alive) {
+            let playerVel = this.PlayScene.car.box2dBody.getLinearVelocity()
+            this.gameScore += time * (playerVel.x*playerVel.x + playerVel.y*playerVel.y)
+        }
+        this.UIScene.physicsUpdate(time, dt)
+    }
+
     static update(time, dt) {
         if (this.timeTillRestart > 0) this.timeTillRestart = Math.max(this.timeTillRestart - dt, 0)
         this.screenWidth = this.PlayScene.cameras.main.width
@@ -90,6 +101,7 @@ class World {
         this.randomSeed = stringToSeed(this.gameID)
         this.randomSeed = 0
         this.randomGen = new Phaser.Math.RandomDataGenerator({seed: this.randomSeed})
+        this.gameScore = 0
 
         console.log(`Game started with ID: ${this.gameID}, Seed: ${this.randomSeed}`)
         scene.car = new Car(scene, 0, 0)    // place car
@@ -98,12 +110,10 @@ class World {
         WorldCamera.init(scene)
         WorldCamera.startFollow(scene.car)
         let rootTile = new RoadTile(0, 0)                  // place first tile
-        console.log(rootTile)
 
         rootTile.generateNext()
         RoadTile.emptySpawnQueue()                          // generates all the tiles in spawn queue at once
 
-        console.log(rootTile)
         scene.worldTimeSinceUpdate = 0
         scene.worldUpdateTime = 1 / 64
         scene.worldTimeScale = 0

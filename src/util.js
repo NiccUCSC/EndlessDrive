@@ -85,3 +85,15 @@ function stringToSeed(string) {
     }
     return (BigInt(hash) * num) & 0xFFFFFFFFFFFFFFFFn
 }
+
+function ParseDigits(num, digits) {
+    num = Math.round(num)
+    let parsed = []
+    for (let i = 0; i < digits; i++) {
+        let digit = num % 10
+        num = (num-digit) / 10
+        parsed.push(digit)
+    }
+    parsed.reverse()
+    return parsed
+}

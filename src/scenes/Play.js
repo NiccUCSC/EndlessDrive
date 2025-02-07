@@ -168,6 +168,7 @@ class Play extends Phaser.Scene {
         if (this.car) this.car.physicsUpdate(time, dt)
         for (let cop of this.cops) cop.physicsUpdate(time, dt)
         RoadTile.physicsUpdate(time, dt)
+        World.physicsUpdate(time, dt)
     }
 
     update(time, dt) {
