@@ -35,6 +35,7 @@ class Play extends Phaser.Scene {
         this.load.image('road', 'road.png')
 
         this.load.image('repairkit', 'RepairKit.png')
+        this.load.image('wheelrepair', 'WheelRepair.png')
         this.load.spritesheet('car', 'RedRaceCarDamages.png', {
             frameWidth: 32, // Width of each frame
             frameHeight: 16, // Height of each frame

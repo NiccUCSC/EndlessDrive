@@ -47,10 +47,11 @@ class RoadTile extends WorldTile {
         }
 
         let repairKitChance = World.randomGen.frac()
-        if ((x || y) && repairKitChance < 0.1) {
+        if ((x || y) && type != "emptycliff" && repairKitChance < 0.15) {
             let tx = World.randomGen.frac() * 10 - 5
             let ty = World.randomGen.frac() * 10 - 5
-            this.scene.generateItem(x*32+tx, y*32+ty, RepairKit)
+            let itemType = World.randomGen.frac() < 2/3 ? RepairKit : WheelRepair
+            this.scene.generateItem(x*32+tx, y*32+ty, itemType)
         }
 
     }
