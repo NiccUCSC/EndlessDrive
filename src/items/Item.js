@@ -20,7 +20,8 @@ class Item extends Phaser.GameObjects.Sprite {
     }
 
     physicsUpdate(time, dt) {
-        if (!this.alive) return this.destroy()
+        // let pos = this.box2dBody.getPosition()
+        if (!this.alive /*|| !getTileAtWorld(pos.x, pos.y)*/) return this.destroy()
         this.box2dBody.setAngularVelocity(0)
         this.box2dBody.setAngle(this.rotation)
     }
