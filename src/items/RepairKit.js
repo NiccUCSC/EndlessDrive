@@ -1,7 +1,6 @@
 class RepairKit extends Item {
     constructor(scene, x, y, texture="repairkit") {
         super(scene, x, y, texture)
-        scene.add.existing(this)
 
         this.setDisplaySize(32, 32)
         this.setDepth(10)
@@ -19,6 +18,6 @@ class RepairKit extends Item {
     onCollect(car) {
         car.health = Math.min(car.health + 20, 100)
         console.log("COLLECTED REPAIR KIT")
-        this.destroy()
+        this.alive = false
     }
 }

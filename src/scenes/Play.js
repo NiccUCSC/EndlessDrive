@@ -152,7 +152,6 @@ class Play extends Phaser.Scene {
             car.obj.addCollide(cop.obj)
             break
         case values.Item | values.Car:
-            console.log("ITEM")
             item.obj.onCollect(car.obj)
             break
         }
@@ -190,13 +189,13 @@ class Play extends Phaser.Scene {
 
     generateItem(x, y, type) {
                 // this.repairKit = new RepairKit(this, 5, 0)
-        this.items.add(new type(this, x, y))
-        console.log(this.items)
+        this.items.add(new type(World.PlayScene, x, y))
     }
 
     physicsUpdate(time, dt) {       // time since last update, world step time
         if (this.car) this.car.physicsUpdate(time, dt)
         for (let cop of this.cops) cop.physicsUpdate(time, dt)
+        for (let item of this.items) item.physicsUpdate(time, dt)
         RoadTile.physicsUpdate(time, dt)
         World.physicsUpdate(time, dt)
     }
@@ -221,6 +220,7 @@ class Play extends Phaser.Scene {
 
         if (this.car) this.car.update(time, dt)
         for (let cop of this.cops) cop.update(time, dt)
+        for (let item of this.items) item.update(time, dt)
 
         WorldCamera.update(time, dt)
     }

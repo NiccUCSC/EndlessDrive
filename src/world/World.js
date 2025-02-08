@@ -132,7 +132,7 @@ class World {
         scene.cops = new Set()
         scene.items = new Set()
         scene.generateCop(-10, 0)
-        scene.generateItem(8, 0, RepairKit)
+        scene.generateItem(8, 2, RepairKit)
         WorldCamera.init(scene)
         WorldCamera.startFollow(scene.car)
         let rootTile = new RoadTile(0, 0)                  // place first tile
@@ -162,6 +162,8 @@ class World {
                 obj.destroy()
         }
         RoadTile.destroy_all()
+
+        console.log(scene.children.getChildren().slice())
 
         this.loadGame(scene)
     }

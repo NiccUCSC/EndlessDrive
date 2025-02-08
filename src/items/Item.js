@@ -1,6 +1,8 @@
 class Item extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture="car") {
         super(scene, 0, 0, texture)
+        scene.add.existing(this)
+        this.scene = scene
 
         this.box2dBody = this.scene.world.createBody({
             type: "dynamic",
@@ -9,6 +11,8 @@ class Item extends Phaser.GameObjects.Sprite {
         this.box2dBody.parent = this
 
         this.setPosition(x*16, y*16)
+
+        this.alive = true
     }
 
     onCollect(car) {
@@ -16,6 +20,7 @@ class Item extends Phaser.GameObjects.Sprite {
     }
 
     physicsUpdate(time, dt) {
+        if (!this.alive) return this.destroy()
         this.box2dBody.setAngularVelocity(0)
         this.box2dBody.setAngle(this.rotation)
     }
@@ -32,9 +37,14 @@ class Item extends Phaser.GameObjects.Sprite {
     }
 
     destroy() {
+        // console.log(this, this.box2dBody)
+        // console.log(this.scene)
+        // console.log(this.scene.world)
+
         this.scene.world.destroyBody(this.box2dBody)
+        this.box2dBody = null
         this.scene.items.delete(this)
-        delete this.box2dBody
+        console.log(this)
         super.destroy()
     }
 }
