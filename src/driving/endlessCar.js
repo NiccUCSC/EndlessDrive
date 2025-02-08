@@ -16,7 +16,7 @@ class Car extends Vehicle {
             shape: planck.Box(0.9, 0.45),
             friction: 0,
             restitution: 0,
-            filterCategoryBits: scene.VEHICAL_CATEGORY || scene.PLAYER_CATEGORY,
+            filterCategoryBits: scene.VEHICAL_CATEGORY | scene.PLAYER_CATEGORY,
         })
         this.box2dBody.setMassData({
             mass: 2,
@@ -36,6 +36,7 @@ class Car extends Vehicle {
         this.groundAccKinetic = 55
 
         console.log(`Car at ${this.box2dBody.getPosition()}`)
+        this.onDeathCallback = () => WorldCamera.stopFollow()
 
     }
 
@@ -111,15 +112,6 @@ class Car extends Vehicle {
         this.prevPos.rotation = this.rotation
     }
 
-    checkDead() {
-        if (this.health < 0) {
-            this.kill()
-            this.isDead = true
-            return true
-        }
-        return false
-    }
-
     update(time, dt) {
         let aproxPos = this.box2dBody.getPosition().clone()
         let deltaPos = this.box2dBody.getLinearVelocity().clone()
@@ -132,9 +124,6 @@ class Car extends Vehicle {
         super.sendTempSkidMarks(aproxPos.x, aproxPos.y)
     }
 
-    kill() {
-        delete this.scene.car
-    }
 
     destroy() {
         this.scene.world.destroyBody(this.box2dBody)

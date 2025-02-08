@@ -20,6 +20,7 @@ class Play extends Phaser.Scene {
         this.SURFACE_CATEGORY = 0x0008
         this.FIXED_CATEGORY = 0x0010
         this.PLAYER_CATEGORY = 0x0020
+        this.ITEM_CATEGORY = 0x0040
         this.debugMode = false
     }
 
@@ -32,6 +33,8 @@ class Play extends Phaser.Scene {
         this.load.image('oneway', 'one_way_wall.png')
         this.load.image('cop', 'CopCar.png')
         this.load.image('road', 'road.png')
+
+        this.load.image('repairkit', 'RepairKit.png')
         this.load.spritesheet('car', 'RedRaceCarDamages.png', {
             frameWidth: 32, // Width of each frame
             frameHeight: 16, // Height of each frame
@@ -65,6 +68,8 @@ class Play extends Phaser.Scene {
         World.preLoad()
         World.loadGame(this)
 
+        // this.repairKit = new RepairKit(this, 5, 0)
+
         this.scene.launch('uiScene')
     }
 
@@ -94,11 +99,28 @@ class Play extends Phaser.Scene {
             return null
         }
 
-        let values = { RoadTile: 0x1, Car: 0x2, Cop: 0x4 }
+        // setment 1
+        let values = { RoadTile: 0x1, Car: 0x2, Cop: 0x4, Item: 0x8 }
         let tile = getInstance(RoadTile)
         let car = getInstance(Car)
         let cop = getInstance(Cop)
-        let key = !!tile * values.RoadTile | !!car * values.Car | !!cop * values.Cop
+        let item = getInstance(Item)
+        let key = !!tile * values.RoadTile | !!car * values.Car | !!cop * values.Cop | !!item * values.Item
+
+        // // segment 2
+        // let values = {}
+        // let instances = {}
+        // let types = [RoadTile, Car, Cop]
+        // let bitMask = 0x1
+        // let key = 0
+        // for (let type of types) {
+        //     values[type] = bitMask
+        //     instances[type] = getInstance(type)
+        //     key |= !!instances.type * bitMask
+        //     bitMask <<= 0x1
+        // }
+
+        console.log(key)
 
         switch (key) {
         case values.RoadTile | values.Car:
@@ -128,6 +150,10 @@ class Play extends Phaser.Scene {
             cop.obj.impact(impactVelocity, "car")
             car.obj.impact(impactVelocity, "cop")
             car.obj.addCollide(cop.obj)
+            break
+        case values.Item | values.Car:
+            console.log("ITEM")
+            item.obj.onCollect(car.obj)
             break
         }
     }
@@ -160,6 +186,12 @@ class Play extends Phaser.Scene {
 
     generateCop(x, y) {
         this.cops.add(new Cop(this, x, y))
+    }
+
+    generateItem(x, y, type) {
+                // this.repairKit = new RepairKit(this, 5, 0)
+        this.items.add(new type(this, x, y))
+        console.log(this.items)
     }
 
     physicsUpdate(time, dt) {       // time since last update, world step time

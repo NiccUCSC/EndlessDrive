@@ -130,7 +130,9 @@ class World {
         console.log(`Game started with ID: ${this.gameID}, Seed: ${this.randomSeed}`)
         scene.car = new Car(scene, 0, 0)    // place car
         scene.cops = new Set()
+        scene.items = new Set()
         scene.generateCop(-10, 0)
+        scene.generateItem(8, 0, RepairKit)
         WorldCamera.init(scene)
         WorldCamera.startFollow(scene.car)
         let rootTile = new RoadTile(0, 0)                  // place first tile
@@ -156,7 +158,7 @@ class World {
 
         let objs = scene.children.getChildren().slice()
         for (let obj of objs) {
-            if ((obj instanceof Car) || (obj instanceof Cop))
+            if ((obj instanceof Car) || (obj instanceof Cop) || (obj instanceof Item))
                 obj.destroy()
         }
         RoadTile.destroy_all()

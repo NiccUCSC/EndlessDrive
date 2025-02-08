@@ -11,7 +11,11 @@ class WorldCamera {
     }
 
     static startFollow(target) {
-        this.cam.startFollow(target)
+        this.cam.startFollow(target, false, 0.5, 0.5)
+    }
+
+    static stopFollow() {
+        this.cam.stopFollow()
     }
 
     static update(time, dt) {
