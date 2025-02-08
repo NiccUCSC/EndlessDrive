@@ -37,14 +37,9 @@ class Item extends Phaser.GameObjects.Sprite {
     }
 
     destroy() {
-        // console.log(this, this.box2dBody)
-        // console.log(this.scene)
-        // console.log(this.scene.world)
-
         this.scene.world.destroyBody(this.box2dBody)
         this.box2dBody = null
         this.scene.items.delete(this)
-        console.log(this)
         super.destroy()
     }
 }

@@ -6,7 +6,6 @@ class World {
     static gameDist = 0
     static gamePrevPos = { x: 0, y: 0 }
 
-
     static restartDelay = 0.05
     static timeTillRestart = 1
     static randomGen = null // new Phaser.Math.RandomDataGenerator({ seed: 'your-seed-value' })
@@ -115,10 +114,10 @@ class World {
     }
 
     static loadGame(scene) {
-        this.gameID = generateGameID(5, 4)
+        this.gameID = generateGameID(5, 5)
         this.randomSeed = stringToSeed(this.gameID)
-        this.randomSeed = 0
-        this.randomGen = new Phaser.Math.RandomDataGenerator({seed: this.randomSeed})
+        // this.randomSeed = 0
+        this.randomGen = new Phaser.Math.RandomDataGenerator(this.gameID.split('-'))
         this.gameScore = 0
         this.gameDist = 0
         this.gamePrevPos = { x: 0, y: 0 }
@@ -132,7 +131,6 @@ class World {
         scene.cops = new Set()
         scene.items = new Set()
         scene.generateCop(-10, 0)
-        scene.generateItem(8, 2, RepairKit)
         WorldCamera.init(scene)
         WorldCamera.startFollow(scene.car)
         let rootTile = new RoadTile(0, 0)                  // place first tile

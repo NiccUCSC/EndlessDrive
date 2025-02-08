@@ -40,7 +40,18 @@ class RoadTile extends WorldTile {
 
         let chance = World.randomGen.frac()
         if (World.PlayScene.cops.length < 2) chance /= 5
-        if ((x || y) && chance < RoadTile.copChances[type]) this.scene.generateCop(x * 32, y * 32)
+        if ((x || y) && chance < RoadTile.copChances[type]) {
+            let tx = World.randomGen.frac() * 10 - 5
+            let ty = World.randomGen.frac() * 10 - 5
+            this.scene.generateCop(x*32+tx, y*32+ty)
+        }
+
+        let repairKitChance = World.randomGen.frac()
+        if ((x || y) && repairKitChance < 0.1) {
+            let tx = World.randomGen.frac() * 10 - 5
+            let ty = World.randomGen.frac() * 10 - 5
+            this.scene.generateItem(x*32+tx, y*32+ty, RepairKit)
+        }
 
     }
 

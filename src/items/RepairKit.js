@@ -16,7 +16,7 @@ class RepairKit extends Item {
     }
 
     onCollect(car) {
-        car.health = Math.min(car.health + 20, 100)
+        car.health = Math.min(car.health + 50, 100)
         console.log("COLLECTED REPAIR KIT")
         this.alive = false
     }

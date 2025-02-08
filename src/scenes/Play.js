@@ -120,8 +120,6 @@ class Play extends Phaser.Scene {
         //     bitMask <<= 0x1
         // }
 
-        console.log(key)
-
         switch (key) {
         case values.RoadTile | values.Car:
             switch (tile.fix.name) {
