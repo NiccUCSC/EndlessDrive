@@ -281,10 +281,10 @@ class RoadTile extends WorldTile {
 
 
         let graphicTarget = temporary ? this.tempSkidGraphics : this.skidGraphics
-        if (temporary) this.tempSkidGraphics.clear()
+        if (temporary) for (let tile of RoadTile.alive) tile.tempSkidGraphics.clear()
 
         let drawLine = (a, b, c, d) => {
-            graphicTarget.lineStyle(4, 0x000000, alpha*0.4)// Black color with alpha transparency
+            graphicTarget.lineStyle(4, 0x000000, alpha*alpha*alpha*0.3)// Black color with alpha transparency
             graphicTarget.beginPath()
             graphicTarget.moveTo(a*16, b*16)
             graphicTarget.lineTo(c*16, d*16)
