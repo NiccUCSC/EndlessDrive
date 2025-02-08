@@ -13,6 +13,7 @@ class World {
     static screenWidth = 640
     static screenHeight = 480
     static screenUnit = 640 / 1000
+    static carSpeedSquared = 0
 
     static initUIScene(uiScene) {
         this.UIScene = uiScene
@@ -92,9 +93,10 @@ class World {
             this.gamePrevPos.x = playerPos.x
             this.gamePrevPos.y = playerPos.y
             this.gameDist += Math.sqrt(dx*dx + dy*dy)
+            this.carSpeedSquared = playerVel.x*playerVel.x + playerVel.y*playerVel.y
             this.gameScore += time *                                                // time
                             (this.gameDist / 1000) *                                // distance
-                            (playerVel.x*playerVel.x + playerVel.y*playerVel.y) *   // velocity^2
+                            this.carSpeedSquared *   // velocity^2
                             this.PlayScene.worldTimeScale                           // timescale
         }
         this.UIScene.physicsUpdate(time, dt)
@@ -115,6 +117,7 @@ class World {
         this.gameScore = 0
         this.gameDist = 0
         this.gamePrevPos = { x: 0, y: 0 }
+        this.carSpeedSquared = 0
 
 
         console.log(`Game started with ID: ${this.gameID}, Seed: ${this.randomSeed}`)

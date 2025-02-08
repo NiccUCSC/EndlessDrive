@@ -12,7 +12,7 @@ class Car extends Vehicle {
             type: "dynamic",
             position: planck.Vec2(x, y),
         })
-        this.box2dBody.createFixture({
+        this.box2dBody.createFixture({  // main
             shape: planck.Box(0.9, 0.45),
             friction: 0,
             restitution: 0,
@@ -55,7 +55,7 @@ class Car extends Vehicle {
         let fowardForce = 0
         let steeringForce = 0
         if (this.alive) {
-            fowardForce = this.wheelAcc * (World.upKey.isDown - 1.25 * World.downKey.isDown)
+            fowardForce = this.wheelAcc * (1 + 0.5 * World.upKey.isDown - 0.5 * World.downKey.isDown)
             steeringForce = World.rightKey.isDown - World.leftKey.isDown
         }
 

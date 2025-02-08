@@ -272,6 +272,7 @@ class RoadTile extends WorldTile {
     }
 
     static destroy_all() {
-        for (let tile of this.alive) tile.destroy()
+        for (let tile of [...this.alive]) tile.destroy()
+        this.spawnQueue = []
     }
 }

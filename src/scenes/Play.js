@@ -30,7 +30,6 @@ class Play extends Phaser.Scene {
         this.load.image('ball', 'ball.png')
         this.load.image('wall', 'wall.png')
         this.load.image('oneway', 'one_way_wall.png')
-        // this.load.image('car', 'RedRaceCar.png')
         this.load.image('cop', 'CopCar.png')
         this.load.image('road', 'road.png')
         this.load.spritesheet('car', 'RedRaceCarDamages.png', {
@@ -68,7 +67,6 @@ class Play extends Phaser.Scene {
 
         this.scene.launch('uiScene')
     }
-
 
     onBeginContact(contact) {
         const fixtureA = contact.getFixtureA()

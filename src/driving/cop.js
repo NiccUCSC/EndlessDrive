@@ -36,7 +36,7 @@ class Cop extends Vehicle {
         this.wheelSpeed = 0
         this.wheelAcc = 10
         this.topSpeed = 15          // top speed when close
-        this.maxTopSpeed = 40       // top speed when at follow dist
+        this.maxTopSpeed = 50       // top speed when at follow dist
         this.nearTopSpeed = 35      // go faster when close
         this.followDist = 8
         this.nearDist = 6
@@ -61,7 +61,6 @@ class Cop extends Vehicle {
             let distToCar = carPos.clone().sub(pos)
             let targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
     
-    
             // process key inputs
             let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
             let fowardForce = this.wheelAcc * Math.min(Math.max(targetDist / this.followDist - 1, 1), this.maxTopSpeed / this.topSpeed)
@@ -70,7 +69,6 @@ class Cop extends Vehicle {
             // wheel speed
             this.wheelSpeed += (fowardForce * (1 - 0.15 * slidePercent) - 
                                 this.wheelSpeed * this.wheelAcc / this.topSpeed) * dt
-    
     
             // Car steering
             let turnRadius = this.turnRadius * Math.min(0.1, 1)

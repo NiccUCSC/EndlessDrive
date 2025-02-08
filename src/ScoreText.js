@@ -6,7 +6,6 @@ class ScoreText {
         this.xPercent = x
         this.yPercent = y
 
-
         this.scene = World.UIScene
 
         this.map = this.scene.make.tilemap({ width: 10, height: 1, tileWidth: ScoreText.charWidth, tileHeight: ScoreText.charHeight })
