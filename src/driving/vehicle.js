@@ -27,6 +27,7 @@ class Vehicle extends Phaser.GameObjects.Sprite {
     sliding(skidPercent, time, dt) {
         this.skidPercent = skidPercent
         this.wheelHealth = Math.max(this.wheelHealth - 5 * skidPercent * dt, 0)
+        console.log(this.wheelHealth)
     }
 
     physicsUpdate(time, dt) {

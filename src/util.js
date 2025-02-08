@@ -97,3 +97,11 @@ function ParseDigits(num, digits) {
     parsed.reverse()
     return parsed
 }
+
+function map(x, x0, x1, y0 = 0, y1 = 1) {
+    return (x - x0) / (x1 - x0) * (y1 - y0) + y0
+}
+
+function clampedMap(x, x0, x1, y0 = 0, y1 = 1) {
+    return Phaser.Math.Clamp((x - x0) / (x1 - x0) * (y1 - y0) + y0, y0, y1)
+}

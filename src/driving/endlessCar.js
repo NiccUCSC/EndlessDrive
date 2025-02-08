@@ -48,9 +48,11 @@ class Car extends Vehicle {
         let vel = this.box2dBody.getLinearVelocity()
         let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
         let angleDiff = getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
-        let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0) * (this.speed > 1)
+        let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0) * (speed > 1)
         let groundAcc = this.groundAccStatic * (1 - slidePercent) + this.groundAccKinetic * slidePercent
+        groundAcc *= clampedMap(this.wheelHealth, 0, 0.5, 0.25, 1)
 
+        // update car sliding and render tiremarks
         super.sliding(slidePercent, time, dt)
 
         // process key inputs
