@@ -14,6 +14,8 @@ class World {
     static screenHeight = 480
     static screenUnit = 640 / 1000
     static carSpeedSquared = 0
+    static playerEngineHealth = 0
+    static playerWheelsHealth = 0
 
     static initUIScene(uiScene) {
         this.UIScene = uiScene
@@ -85,15 +87,18 @@ class World {
     }
 
     static physicsUpdate(time, dt) {
+        let car = this.PlayScene.car
+        let playerVel = car.box2dBody.getLinearVelocity()
+        let playerPos = car.box2dBody.getPosition()
+        this.carSpeedSquared = playerVel.x*playerVel.x + playerVel.y*playerVel.y
+        this.playerEngineHealth = car.health / 100
+        this.playerWheelsHealth = car.wheelHealth / 100
         if (this.PlayScene.car.alive) {
-            let playerVel = this.PlayScene.car.box2dBody.getLinearVelocity()
-            let playerPos = this.PlayScene.car.box2dBody.getPosition()
             let dx = playerPos.x - this.gamePrevPos.x
             let dy = playerPos.y - this.gamePrevPos.y
             this.gamePrevPos.x = playerPos.x
             this.gamePrevPos.y = playerPos.y
             this.gameDist += Math.sqrt(dx*dx + dy*dy)
-            this.carSpeedSquared = playerVel.x*playerVel.x + playerVel.y*playerVel.y
             this.gameScore += time *                                                // time
                             (this.gameDist / 1000) *                                // distance
                             this.carSpeedSquared *   // velocity^2
@@ -118,6 +123,8 @@ class World {
         this.gameDist = 0
         this.gamePrevPos = { x: 0, y: 0 }
         this.carSpeedSquared = 0
+        this.playerEngineHealth = 1
+        this.playerWheelsHealth = 1
 
 
         console.log(`Game started with ID: ${this.gameID}, Seed: ${this.randomSeed}`)

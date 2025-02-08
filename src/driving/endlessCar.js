@@ -46,10 +46,12 @@ class Car extends Vehicle {
         // car state
         let pos = this.box2dBody.getPosition()
         let vel = this.box2dBody.getLinearVelocity()
-        let angleDiff = getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
-        let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0)
-        let groundAcc = this.groundAccStatic * (1 - slidePercent) + this.groundAccKinetic * slidePercent
         let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
+        let angleDiff = getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
+        let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0) * (this.speed > 1)
+        let groundAcc = this.groundAccStatic * (1 - slidePercent) + this.groundAccKinetic * slidePercent
+
+        super.sliding(slidePercent, time, dt)
 
         // process key inputs
         let fowardForce = 0
@@ -98,8 +100,6 @@ class Car extends Vehicle {
 
         let frame = Phaser.Math.Clamp(Math.floor((100 - this.health) * 3 / 100), 0, 3)
         this.setFrame(frame)
-
-        // console.log(`CAR HEATH: ${this.health}`)
     }
 
     checkDead() {

@@ -34,14 +34,14 @@ class Cop extends Vehicle {
         })
 
         this.wheelSpeed = 0
-        this.wheelAcc = 10
+        this.wheelAcc = 15
         this.topSpeed = 15          // top speed when close
-        this.maxTopSpeed = 50       // top speed when at follow dist
+        this.maxTopSpeed = 30       // top speed when at follow dist
         this.nearTopSpeed = 35      // go faster when close
         this.followDist = 8
         this.nearDist = 6
 
-        this.turnRadius = 10
+        this.turnRadius = 7.5
         this.groundAccStatic = 80
         this.groundAccKinetic = 55
     }
@@ -52,17 +52,21 @@ class Cop extends Vehicle {
         // car state
         let pos = this.box2dBody.getPosition()
         let vel = this.box2dBody.getLinearVelocity()
+        let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
         let angleDiff = getAngularDiff(this.rotation, Math.atan2(vel.y, vel.x))
         let slidePercent = Math.max(Math.min(Math.abs(angleDiff) / 0.5, 1), 0)
 
         if (this.scene.car.alive) {
             // target
-            let carPos = this.scene.car.box2dBody.getPosition()
+            let carBody = this.scene.car.box2dBody
+            let carPos = carBody.getPosition()
+            let carVel = carBody.getLinearVelocity()
             let distToCar = carPos.clone().sub(pos)
             let targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
+            let targetTimeDist = targetDist / Math.max(speed, 1)        // approximate distance in time
+            let targetDisp = carPos.clone().add(carVel.clone().mul(targetTimeDist / 4)).sub(pos)
     
             // process key inputs
-            let speed = Math.sqrt(vel.x*vel.x + vel.y*vel.y)
             let fowardForce = this.wheelAcc * Math.min(Math.max(targetDist / this.followDist - 1, 1), this.maxTopSpeed / this.topSpeed)
             fowardForce *= Math.min(Math.max(2 - targetDist / this.nearDist, 1), this.nearTopSpeed / this.topSpeed)
     
@@ -71,9 +75,8 @@ class Cop extends Vehicle {
                                 this.wheelSpeed * this.wheelAcc / this.topSpeed) * dt
     
             // Car steering
-            let turnRadius = this.turnRadius * Math.min(0.1, 1)
-            let maxRotDelta = speed / turnRadius * dt
-            let rotDelta = getAngularDiff(Math.atan2(distToCar.y, distToCar.x), this.rotation)
+            let maxRotDelta = speed / this.turnRadius * dt
+            let rotDelta = getAngularDiff(Math.atan2(targetDisp.y, targetDisp.x), this.rotation)
             rotDelta = Math.max(Math.min(rotDelta, maxRotDelta), -maxRotDelta)
     
             this.rotation += rotDelta    // fix to limit maximum turn rate to speed / turn radius

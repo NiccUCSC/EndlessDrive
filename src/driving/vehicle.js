@@ -4,6 +4,8 @@ class Vehicle extends Phaser.GameObjects.Sprite {
         super(scene, 0, 0, texture)
         this.collidingWith = new Set()
         this.health = 100
+        this.wheelHealth = 100
+        this.skidPercent = 0
         this.alive = true
         this.onDeathCallback = params.onDeathCallback
     }
@@ -19,6 +21,12 @@ class Vehicle extends Phaser.GameObjects.Sprite {
             this.health -= damage
             break
         }
+        this.health = Math.max(this.health, 0)
+    }
+
+    sliding(skidPercent, time, dt) {
+        this.skidPercent = skidPercent
+        this.wheelHealth = Math.max(this.wheelHealth - 5 * skidPercent * dt, 0)
     }
 
     physicsUpdate(time, dt) {
@@ -28,6 +36,7 @@ class Vehicle extends Phaser.GameObjects.Sprite {
             if (other instanceof Cop) this.health -= 20 * dt
 
         if (this.health <= 0) {
+            this.health = 0
             this.alive = false
 
             let explosion = World.PlayScene.add.sprite(this.x, this.y, 'explodeSheet')

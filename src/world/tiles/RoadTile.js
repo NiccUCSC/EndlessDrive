@@ -37,7 +37,6 @@ class RoadTile extends WorldTile {
 
         let chance = World.randomGen.frac()
         if (World.PlayScene.cops.length < 2) chance /= 5
-        console.log(chance, RoadTile.copChances[type])
         if ((x || y) && chance < RoadTile.copChances[type]) this.scene.generateCop(x * 32, y * 32)
 
     }
