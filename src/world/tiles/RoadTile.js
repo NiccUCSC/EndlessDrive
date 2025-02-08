@@ -35,6 +35,9 @@ class RoadTile extends WorldTile {
 
         this.generateWalls(x, y)
 
+        this.skidGraphics = World.PlayScene.add.graphics().setDepth(1)          // updated every physics tick
+        this.tempSkidGraphics = World.PlayScene.add.graphics().setDepth(2)      // updated to show potential skid from current tick
+
         let chance = World.randomGen.frac()
         if (World.PlayScene.cops.length < 2) chance /= 5
         if ((x || y) && chance < RoadTile.copChances[type]) this.scene.generateCop(x * 32, y * 32)
@@ -148,6 +151,14 @@ class RoadTile extends WorldTile {
         return null
     }
 
+    static getTileAtWorld(x, y) {
+        let tx = Math.round(x / 32)
+        let ty = Math.round(y / 32)
+        return this.getTileAt(tx, ty)
+    }
+
+
+
     prune() {
         let playerPos = World.PlayScene.car.box2dBody.getPosition()
         let playerTileX = Math.round(playerPos.x / 32)
@@ -260,12 +271,50 @@ class RoadTile extends WorldTile {
             const newTilePos = this.spawnQueue.shift()
             if (newTilePos) this.generateAt(...newTilePos)
         }
+    }
 
+    drawSkidMarks(x0, y0, theta0, x1, y1, theta1, alpha, temporary = false) {
+        if (x0 == x1 && y0 == y1) return
+
+        let cw = 0.75                  // car width
+        let ch = 1.5                // car length
+
+
+        let graphicTarget = temporary ? this.tempSkidGraphics : this.skidGraphics
+        if (temporary) this.tempSkidGraphics.clear()
+
+        let drawLine = (a, b, c, d) => {
+            graphicTarget.lineStyle(4, 0x000000, alpha*0.4)// Black color with alpha transparency
+            graphicTarget.beginPath()
+            graphicTarget.moveTo(a*16, b*16)
+            graphicTarget.lineTo(c*16, d*16)
+            graphicTarget.strokePath()
+            graphicTarget.closePath()
+        }
+
+        let tx0 = Math.cos(theta0)       // previous tangent to car direction x
+        let ty0 = Math.sin(theta0)       // previous tangent y
+        let tx1 = Math.cos(theta1)       // current tangent x
+        let ty1 = Math.sin(theta1)       // current tangent y
+        let px0 = -ty0              // previous perpendicular x
+        let py0 = tx0               // previous perpendicular y
+        let px1 = -ty1              // current perpendicular x
+        let py1 = tx1               // current perpendicular y
+
+        for (let dtdp of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) {
+            let dt = dtdp[0] * ch / 2       // tangential component of offset
+            let dp = dtdp[1] * cw / 2      // perpendicular component of offset
+            drawLine(x0 + dp*px0 + dt*tx0, y0 + dp*py0 + dt*ty0, 
+                x1 + dp*px1 + dt*tx1, y1 + dp*py1 + dt*ty1)            
+            // drawLine(x0, y0, x1, y1)
+        }
     }
 
     destroy() {
         this.scene.world.destroyBody(this.box2dBody)
         this.box2dBody = null
+        this.skidGraphics.destroy()
+        this.tempSkidGraphics.destroy()
         RoadTile.alive.delete(this)
         super.destroy()
     }

@@ -8,6 +8,7 @@ class Vehicle extends Phaser.GameObjects.Sprite {
         this.skidPercent = 0
         this.alive = true
         this.onDeathCallback = params.onDeathCallback
+        this.prevPos = { x: 0, y: 0, theta: 0 }
     }
 
     impact(impactVelocity, other) {
@@ -27,7 +28,21 @@ class Vehicle extends Phaser.GameObjects.Sprite {
     sliding(skidPercent, time, dt) {
         this.skidPercent = skidPercent
         this.wheelHealth = Math.max(this.wheelHealth - 5 * skidPercent * dt, 0)
-        console.log(this.wheelHealth)
+    }
+
+    sendSkidMarks() {
+        if (!this.wheelHealth) return
+
+        let pos = this.box2dBody.getPosition()
+        let tile = RoadTile.getTileAtWorld(pos.x, pos.y)
+        if (tile) tile.drawSkidMarks(this.prevPos.x, this.prevPos.y, this.prevPos.rotation, pos.x, pos.y, this.rotation, this.skidPercent)
+    }
+
+    sendTempSkidMarks(nextx, nexty) {
+        if (!this.wheelHealth) return
+        let pos = this.box2dBody.getPosition()
+        let tile = RoadTile.getTileAtWorld(pos.x, pos.y)
+        if (tile) tile.drawSkidMarks(pos.x, pos.y, this.rotation, nextx, nexty, this.rotation, this.skidPercent, true)
     }
 
     physicsUpdate(time, dt) {

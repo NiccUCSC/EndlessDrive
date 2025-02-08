@@ -169,6 +169,10 @@ class Play extends Phaser.Scene {
         World.physicsUpdate(time, dt)
     }
 
+    afterPhysicsUpdate() {
+        this.car.afterPhysicsUpdate()
+    }
+
     update(time, dt) {
         time /= 1000
         dt /= 1000
@@ -179,6 +183,7 @@ class Play extends Phaser.Scene {
             this.worldTimeSinceUpdate -= this.worldUpdateTime
             this.physicsUpdate(this.worldTimeSinceUpdate, this.worldUpdateTime)
             this.world.step(this.worldUpdateTime) // Run physics simulation
+            this.afterPhysicsUpdate()
             if (this.debugMode) drawDebugGraphics()
         }
 

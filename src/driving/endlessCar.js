@@ -102,6 +102,13 @@ class Car extends Vehicle {
 
         let frame = Phaser.Math.Clamp(Math.floor((100 - this.health) * 3 / 100), 0, 3)
         this.setFrame(frame)
+
+        this.prevPos = {...this.prevPos, ...this.box2dBody.getPosition().clone()}
+    }
+
+    afterPhysicsUpdate() {
+        super.sendSkidMarks()
+        this.prevPos.rotation = this.rotation
     }
 
     checkDead() {
@@ -122,6 +129,7 @@ class Car extends Vehicle {
         aproxPos.add(deltaPos)
 
         this.setPosition(aproxPos.x * 16, aproxPos.y * 16)
+        super.sendTempSkidMarks(aproxPos.x, aproxPos.y)
     }
 
     kill() {
