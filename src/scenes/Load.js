@@ -22,6 +22,11 @@ class Load extends Phaser.Scene {
             loadingBar.destroy()
         })
 
+        // SFX
+        this.load.path = './assets/sfx/'
+        this.load.audio("bgmusic", "heavy-racing-151129.mp3") 
+
+        // Play scene
         this.load.path = './assets/img/'
         this.load.image('cop', 'CopCar.png')
 

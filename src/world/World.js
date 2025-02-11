@@ -16,6 +16,8 @@ class World {
     static playerEngineHealth = 0
     static playerWheelsHealth = 0
 
+    static bgMusic = null
+
     static initUIScene(uiScene) {
         this.UIScene = uiScene
     }
@@ -79,6 +81,10 @@ class World {
             this.timeTillRestart = this.restartDelay
         })
 
+        this.bgMusic = playScene.sound.add('bgmusic', { loop: true })
+        this.bgMusic.play()
+        this.bgMusic.setVolume(0.1)
+
     }
 
     static preLoad() {
@@ -104,6 +110,8 @@ class World {
                             this.PlayScene.worldTimeScale                           // timescale
         }
         this.UIScene.physicsUpdate(time, dt)
+
+        this.bgMusic.setRate(this.PlayScene.worldTimeScale)
     }
 
     static update(time, dt) {
@@ -113,7 +121,14 @@ class World {
         this.screenUnit = this.screenHeight / 1000
     }
 
+    static onGameOver() {
+        this.bgMusic.setVolume(0.01)
+    }
+
     static loadGame(scene) {
+        this.bgMusic.setVolume(0.1)
+
+
         this.gameID = generateGameID(5, 5)
         this.randomSeed = stringToSeed(this.gameID)
         // this.randomSeed = 0

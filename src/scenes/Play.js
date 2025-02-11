@@ -24,11 +24,6 @@ class Play extends Phaser.Scene {
         this.debugMode = false
     }
 
-    preload() {
-
-        
-    }
-
     create() {
         this.anims.create({
             key: 'explode',
@@ -197,7 +192,7 @@ class Play extends Phaser.Scene {
 
     onGameOver() {
         World.PlayScene.worldTimeScale *= 0.25
+        World.onGameOver()
         console.log("GAME OVER")
-
     }
 }
