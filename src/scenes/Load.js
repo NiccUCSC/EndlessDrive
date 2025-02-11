@@ -27,6 +27,7 @@ class Load extends Phaser.Scene {
         this.load.audio("bgmusic1", "heavy-racing-151129.mp3")
         this.load.audio("bgmusic2", "race-cars-phonk-gaming-music.mp3")
         this.load.audio("bgmusic3", "crazy-race-acid-breakbeat.mp3")
+        this.load.audio("bgmusic4", "funny-comedy-cartoon-background-music.mp3")
 
         this.load.audio("slide1", "rubber-tire-screech-8-202578.mp3")
         this.load.audio("slide2", "rubber-tire-screech-9-202582.mp3")

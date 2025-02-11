@@ -118,12 +118,30 @@ class World {
             playScene.sound.add('bgmusic1', { loop: false, volume: 0.3 }),
             playScene.sound.add('bgmusic2', { loop: false, volume: 0.3 }),
             playScene.sound.add('bgmusic3', { loop: false, volume: 0.3 }),
+            playScene.sound.add('bgmusic4', { loop: false, volume: 0.3 }),
         ]
+
+        this.bgMusics0 = [this.bgMusics[3]]
+        this.bgMusics1234 = [this.bgMusics[0], this.bgMusics[1], this.bgMusics[2]]
 
         
         this.playNextSong = () => {
-            let nextSongOptions = this.bgMusics.length > 1 ? this.bgMusics.filter(music => music != this.bgMusic) : this.bgMusics
+            let songPool = null
+            switch (this.difficulty) {
+                case 0:
+                    songPool = this.bgMusics0
+                    break
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    songPool = this.bgMusics1234
+                    break
+            }
+            let nextSongOptions = songPool.length > 1 ? songPool.filter(music => music != this.bgMusic) : songPool
             let nextSong = Phaser.Utils.Array.GetRandom(nextSongOptions)
+
+            console.log(`Changing song to: ${nextSong}`)
             if (this.bgMusic && this.bgMusic.isPlaying) this.bgMusic.stop()
 
             this.bgMusic = nextSong
