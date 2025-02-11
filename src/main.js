@@ -1,6 +1,6 @@
-// Code Practice: RNGolf
-// Name: 
-// Date:
+// Endless Runner: Driftopia Police Chase
+// Name: Nicolas Vaillancourt
+// Date: 02/10/2025
 
 'use strict'
 
@@ -11,7 +11,7 @@ let config = {
         mode: Phaser.Scale.RESIZE, // Fit the game to the screen
         autoCenter: Phaser.Scale.CENTER_BOTH // Center the game canvas
     },
-    scene: [ Play, UI ]
+    scene: [ Load, Play, UI ]
 }
 
 let game = new Phaser.Game(config)

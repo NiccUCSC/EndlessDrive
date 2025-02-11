@@ -25,36 +25,7 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
-        this.load.path = './assets/img/'
-        this.load.image('grass', 'grass.jpg')
-        this.load.image('cup', 'cup.jpg')
-        this.load.image('ball', 'ball.png')
-        this.load.image('wall', 'wall.png')
-        this.load.image('oneway', 'one_way_wall.png')
-        this.load.image('cop', 'CopCar.png')
-        this.load.image('road', 'road.png')
 
-        this.load.image('repairkit', 'RepairKit.png')
-        this.load.image('wheelrepair', 'WheelRepair.png')
-        this.load.spritesheet('car', 'RedRaceCarDamages.png', {
-            frameWidth: 32, // Width of each frame
-            frameHeight: 16, // Height of each frame
-        })
-
-        this.load.spritesheet('explodeSheet', 'Explode.png', {
-            frameWidth: 64,
-            frameHeight: 64,
-            startFrame: 0,
-            endFrame: 9
-        })
-        
-        this.load.image('tileset', 'ExtrudedTileMap1.png')
-        this.load.path = './assets/tiles/'
-        this.load.tilemapTiledJSON('tile_straight_road', 'StraightRoad.tmj')
-
-        this.load.tilemapTiledJSON('tileStraightRoad', 'StraightRoad01.tmj')
-        this.load.tilemapTiledJSON('tileIntersectionRoad', 'IntersectionRoad01.tmj')
-        this.load.tilemapTiledJSON('multiroad', 'MultiRoad.tmj')
         
     }
 

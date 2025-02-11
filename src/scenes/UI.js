@@ -7,17 +7,6 @@ class UI extends Phaser.Scene {
         World.initUIScene(this)
     }
 
-    preload() {
-        this.load.path = './assets/img/'
-        this.load.image('speedomoter', 'Speedomoter3.png')
-        this.load.image('speedomoterNeedle', 'SpeedomoterNeedle2.png')
-        this.load.spritesheet('health', 'Health.png', { frameWidth: 200, frameHeight: 80 })
-
-        this.load.spritesheet('numbers', 'numbers.png', { frameWidth: 16, frameHeight: 24 })
-        this.load.spritesheet('letters', 'letters.png', { frameWidth: 16, frameHeight: 24 })
-        this.load.spritesheet('controls', 'controls.png', { frameWidth: 32, frameHeight: 24 })
-    }
-
     create() {
         this.add.tilemap()
 
@@ -88,10 +77,10 @@ class UI extends Phaser.Scene {
             let chei = 48*unit
             this.controls[i].setPosition(5*unit + i*cwid*unit, hei - 5*unit)
             this.controls[i].setDisplaySize(cwid, chei)
-            let nwid = 32*unit
-            let nhei = 48*unit
+            let nwid = (32-4)*unit
+            let nhei = (48-4)*unit
             let nInd = i + this.numControls
-            this.controls[nInd].setPosition(5*unit + i*cwid*unit, hei - 5*unit)
+            this.controls[nInd].setPosition((5+2)*unit + i*cwid*unit, hei - (5+2)*unit)
             this.controls[nInd].setDisplaySize(nwid, nhei)
         }
     }
