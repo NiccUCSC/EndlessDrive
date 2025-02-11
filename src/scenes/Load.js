@@ -24,8 +24,10 @@ class Load extends Phaser.Scene {
 
         // SFX
         this.load.path = './assets/sfx/'
-        this.load.audio("bgmusic", "heavy-racing-151129.mp3")
-        this.load.audio("bgmusic1", "race-cars-phonk-gaming-music.mp3")
+        this.load.audio("bgmusic1", "heavy-racing-151129.mp3")
+        this.load.audio("bgmusic2", "race-cars-phonk-gaming-music.mp3")
+        this.load.audio("bgmusic3", "crazy-race-acid-breakbeat.mp3")
+
         this.load.audio("slide1", "rubber-tire-screech-8-202578.mp3")
         this.load.audio("slide2", "rubber-tire-screech-9-202582.mp3")
         this.load.audio("slide3", "rubber-tire-screech-3-202532.mp3")
@@ -38,7 +40,7 @@ class Load extends Phaser.Scene {
 
         // Menu Background
         this.load.path = './assets/img/'
-        this.load.image('menubackgroud', "menuBackground.png")
+        this.load.image('menubackgroud', "menuBackground2.png")
 
         // Play scene
         this.load.path = './assets/img/'

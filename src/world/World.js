@@ -115,12 +115,13 @@ class World {
 
 
         this.bgMusics = [
-            playScene.sound.add('bgmusic', { loop: false, volume: 0.3 }),
-            playScene.sound.add('bgmusic1', { loop: false, volume: 0.3 }),
+            // playScene.sound.add('bgmusic1', { loop: false, volume: 0.3 }),
+            // playScene.sound.add('bgmusic2', { loop: false, volume: 0.3 }),
+            playScene.sound.add('bgmusic3', { loop: false, volume: 0.3 }),
         ]
         this.bgMusic = Phaser.Utils.Array.GetRandom(this.bgMusics)
         let playNextSong = () => {
-            let nextSongOptions = this.bgMusics.filter(music => music != this.bgMusic)
+            let nextSongOptions = this.bgMusics.length > 1 ? this.bgMusics.filter(music => music != this.bgMusic) : this.bgMusics
             this.bgMusic = Phaser.Utils.Array.GetRandom(nextSongOptions)
             this.bgMusic.once('complete', () => {
                 playNextSong()
