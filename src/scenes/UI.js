@@ -75,12 +75,12 @@ class UI extends Phaser.Scene {
         for (let i = 0; i < this.numControls; i++) {
             let cwid = 64*unit
             let chei = 48*unit
-            this.controls[i].setPosition(5*unit + i*cwid*unit, hei - 5*unit)
+            this.controls[i].setPosition(5*unit + i*cwid, hei - 5*unit)
             this.controls[i].setDisplaySize(cwid, chei)
             let nwid = (32-4)*unit
             let nhei = (48-4)*unit
             let nInd = i + this.numControls
-            this.controls[nInd].setPosition((5+2)*unit + i*cwid*unit, hei - (5+2)*unit)
+            this.controls[nInd].setPosition((5+2)*unit + i*cwid, hei - (5+2)*unit)
             this.controls[nInd].setDisplaySize(nwid, nhei)
         }
     }
