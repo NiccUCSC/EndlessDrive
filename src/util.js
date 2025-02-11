@@ -105,3 +105,14 @@ function map(x, x0, x1, y0 = 0, y1 = 1) {
 function clampedMap(x, x0, x1, y0 = 0, y1 = 1) {
     return Phaser.Math.Clamp((x - x0) / (x1 - x0) * (y1 - y0) + y0, y0, y1)
 }
+
+function letterToIndex(letter) {
+    if (typeof letter !== 'string' || letter.length !== 1) {
+        throw new Error('Input must be a single letter')
+    }
+    letter = letter.toLowerCase()
+    if (letter < 'a' || letter > 'z') {
+        throw new Error('Input must be a letter from A to Z')
+    }
+    return letter.charCodeAt(0) - 'a'.charCodeAt(0)
+}

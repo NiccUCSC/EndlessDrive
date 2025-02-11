@@ -14,6 +14,8 @@ class UI extends Phaser.Scene {
         this.load.spritesheet('health', 'Health.png', { frameWidth: 200, frameHeight: 80 })
 
         this.load.spritesheet('numbers', 'numbers.png', { frameWidth: 16, frameHeight: 24 })
+        this.load.spritesheet('letters', 'letters.png', { frameWidth: 16, frameHeight: 24 })
+        this.load.spritesheet('controls', 'controls.png', { frameWidth: 32, frameHeight: 24 })
     }
 
     create() {
@@ -29,6 +31,14 @@ class UI extends Phaser.Scene {
         this.healthDisplay = this.add.sprite(0, 0, "health", 0).setOrigin(0.5, 1)
         this.engineHealth = this.add.sprite(0, 0, "health", 1).setOrigin(12/200, 12/80)
         this.wheelHealth = this.add.sprite(0, 0, "health", 2).setOrigin(107/200, 12/80)
+
+        this.controls = []
+        this.controlsKeys = "WSDAR"
+        this.numControls = 5
+        for (let i = 0; i < this.numControls; i++) 
+            this.controls.push(this.add.sprite(0, 0, "controls", i).setOrigin(0, 1))
+        for (let i = 0; i < this.numControls; i++)
+            this.controls.push(this.add.sprite(0, 0, "letters", letterToIndex(this.controlsKeys.charAt(i))).setOrigin(0, 1))
     }
 
     physicsUpdate(time, dt) {
@@ -73,6 +83,16 @@ class UI extends Phaser.Scene {
             this.numbers[i].setDisplaySize(wid, hei)
         }
 
-
+        for (let i = 0; i < this.numControls; i++) {
+            let cwid = 64*unit
+            let chei = 48*unit
+            this.controls[i].setPosition(5*unit + i*cwid*unit, hei - 5*unit)
+            this.controls[i].setDisplaySize(cwid, chei)
+            let nwid = 32*unit
+            let nhei = 48*unit
+            let nInd = i + this.numControls
+            this.controls[nInd].setPosition(5*unit + i*cwid*unit, hei - 5*unit)
+            this.controls[nInd].setDisplaySize(nwid, nhei)
+        }
     }
 }
