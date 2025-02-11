@@ -181,33 +181,33 @@ class World {
             sound.setVolume(skidVolume)
         }
 
-        if (this.babyDifficulty.isDown) {
-            this.difficulty = 0
+        if (this.babyDifficulty.isDown)     this.difficulty = 0        
+        if (this.easyDifficulty.isDown)     this.difficulty = 1
+        if (this.normalDifficulty.isDown)   this.difficulty = 2
+        if (this.hardDifficulty.isDown)     this.difficulty = 3
+        if (this.insaneDifficulty.isDown)   this.difficulty = 4
+
+        switch (this.difficulty) {
+        case 0:
             this.playSpeedMultiplier = 0.5
-        }
-        
-        if (this.easyDifficulty.isDown) {
-            this.difficulty = 1
+            break
+        case 1:
             this.playSpeedMultiplier = 0.75
-        }
-        
-        if (this.normalDifficulty.isDown) {
-            this.difficulty = 2
+            break
+        case 2:
             this.playSpeedMultiplier = 0.875
-        }
-        
-        if (this.hardDifficulty.isDown) {
-            this.difficulty = 3
+            break
+        case 3:
             this.playSpeedMultiplier = 1
-        }
-        
-        if (this.insaneDifficulty.isDown) {
-            this.difficulty = 4
+            break
+        case 4: 
             this.playSpeedMultiplier = 1.25
+            break
         }
 
         this.playTime += 1/64
-        this.PlayScene.worldTimeScale = this.playSpeedMultiplier * Math.min(2, 1 + this.playTime / 60)
+        this.PlayScene.worldTimeScale = this.playSpeedMultiplier * Math.min(1.5, 1 + this.playTime / 120)
+        console.log(this.PlayScene.worldTimeScale)
     }
 
     static update(time, dt) {
