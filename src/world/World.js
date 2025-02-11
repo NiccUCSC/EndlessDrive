@@ -23,7 +23,7 @@ class World {
     static pointMult = 1e6 / this.target1miltime / this.avgSpeed**2     // should take 10 mins at 1x speed at 32 m/s to reach 1000000 points
     static fullScoreDist = 32 * 60                                      // should take 1 minute to reach full distance score at 1x speed
 
-    static difficulty = 0
+    static difficulty = 3
     static playSpeedMultiplier = 1
 
     static bgMusic = null
@@ -115,20 +115,24 @@ class World {
 
 
         this.bgMusics = [
-            // playScene.sound.add('bgmusic1', { loop: false, volume: 0.3 }),
-            // playScene.sound.add('bgmusic2', { loop: false, volume: 0.3 }),
+            playScene.sound.add('bgmusic1', { loop: false, volume: 0.3 }),
+            playScene.sound.add('bgmusic2', { loop: false, volume: 0.3 }),
             playScene.sound.add('bgmusic3', { loop: false, volume: 0.3 }),
         ]
-        this.bgMusic = Phaser.Utils.Array.GetRandom(this.bgMusics)
-        let playNextSong = () => {
+
+        
+        this.playNextSong = () => {
             let nextSongOptions = this.bgMusics.length > 1 ? this.bgMusics.filter(music => music != this.bgMusic) : this.bgMusics
-            this.bgMusic = Phaser.Utils.Array.GetRandom(nextSongOptions)
+            let nextSong = Phaser.Utils.Array.GetRandom(nextSongOptions)
+            if (this.bgMusic && this.bgMusic.isPlaying) this.bgMusic.stop()
+
+            this.bgMusic = nextSong
             this.bgMusic.once('complete', () => {
-                playNextSong()
+                this.playNextSong()
             })
             this.bgMusic.play()
         }
-        playNextSong()
+        this.playNextSong()
 
         this.bgMusic.play()
         // this.bgMusic.setVolume(0.3)
@@ -210,6 +214,7 @@ class World {
             sound.setVolume(skidVolume)
         }
 
+        let prevDifficulty = this.difficulty
         if (this.babyDifficulty.isDown)     this.difficulty = 0        
         if (this.easyDifficulty.isDown)     this.difficulty = 1
         if (this.normalDifficulty.isDown)   this.difficulty = 2
@@ -239,6 +244,13 @@ class World {
             this.playTime += 1/64                                   // simulated play time in scaled ticks
             this.realPlayTime += 1/64/this.playSpeedMultiplier      // apprximate real play time in seconds
             this.PlayScene.worldTimeScale = this.playSpeedMultiplier * (1 + Math.log(1 + this.realPlayTime / 180))
+        }
+
+        if (prevDifficulty != this.difficulty) {
+            this.resetGame(this.PlayScene)
+            this.timeTillRestart = this.restartDelay
+            this.playNextSong()
+            return
         }
     }
 
