@@ -35,6 +35,10 @@ class Load extends Phaser.Scene {
         this.load.audio("carcrash", "crash-7075.mp3")
         this.load.audio("carexplode", "explosion-6055.mp3")
 
+        // Menu Background
+        this.load.path = './assets/img/'
+        this.load.image('menubackgroud', "menuBackground.png")
+
         // Play scene
         this.load.path = './assets/img/'
         this.load.image('cop', 'CopCar.png')
@@ -78,6 +82,6 @@ class Load extends Phaser.Scene {
         }
 
         // go to Title scene
-        this.scene.start('playScene')
+        this.scene.start('menuScene')
     }
 }

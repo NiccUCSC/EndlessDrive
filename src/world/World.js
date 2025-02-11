@@ -15,15 +15,37 @@ class World {
     static carSpeedSquared = 0
     static playerEngineHealth = 0
     static playerWheelsHealth = 0
+    static playTime = 0
+
+    static difficulty = 0
+    static playSpeedMultiplier = 1
 
     static bgMusic = null
+
+    static initMenu(menuScene) {
+        this.MenuScene = menuScene
+
+        this.babyDifficulty = this.MenuScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE)
+        this.easyDifficulty = this.MenuScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO)
+        this.normalDifficulty = this.MenuScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE)
+        this.hardDifficulty = this.MenuScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR)
+        this.insaneDifficulty = this.MenuScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE)
+    }
 
     static initUIScene(uiScene) {
         this.UIScene = uiScene
     }
 
+    static updateDifficulty
+
     static init(playScene) {
         this.PlayScene = playScene
+
+        this.babyDifficulty = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE)
+        this.easyDifficulty = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO)
+        this.normalDifficulty = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE)
+        this.hardDifficulty = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR)
+        this.insaneDifficulty = this.PlayScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FIVE)
 
         playScene.input.keyboard.on('keydown', (event) => {
             if (!this.gameStarted && this.timeTillRestart == 0 && 
@@ -144,7 +166,7 @@ class World {
             this.gamePrevPos.x = playerPos.x
             this.gamePrevPos.y = playerPos.y
             this.gameDist += Math.sqrt(dx*dx + dy*dy)
-            this.gameScore += time *                                                // time
+            this.gameScore += 1/256 *                                                // time
                             (this.gameDist / 1000) *                                // distance
                             this.carSpeedSquared *   // velocity^2
                             this.PlayScene.worldTimeScale                           // timescale
@@ -158,6 +180,34 @@ class World {
         for (let sound of this.slideSFXs) {
             sound.setVolume(skidVolume)
         }
+
+        if (this.babyDifficulty.isDown) {
+            this.difficulty = 0
+            this.playSpeedMultiplier = 0.5
+        }
+        
+        if (this.easyDifficulty.isDown) {
+            this.difficulty = 1
+            this.playSpeedMultiplier = 0.75
+        }
+        
+        if (this.normalDifficulty.isDown) {
+            this.difficulty = 2
+            this.playSpeedMultiplier = 0.875
+        }
+        
+        if (this.hardDifficulty.isDown) {
+            this.difficulty = 3
+            this.playSpeedMultiplier = 1
+        }
+        
+        if (this.insaneDifficulty.isDown) {
+            this.difficulty = 4
+            this.playSpeedMultiplier = 1.25
+        }
+
+        this.playTime += 1/64
+        this.PlayScene.worldTimeScale = this.playSpeedMultiplier * Math.min(2, 1 + this.playTime / 60)
     }
 
     static update(time, dt) {
@@ -176,6 +226,7 @@ class World {
 
     static loadGame(scene) {
         this.bgMusic.setVolume(0.3)
+        console.log(this.difficulty)
 
 
         this.gameID = generateGameID(5, 5)
@@ -209,7 +260,9 @@ class World {
 
     static startGame(scene) {
         this.gameStarted = true
-        scene.worldTimeScale = 1
+        scene.worldTimeScale = this.playSpeedMultiplier
+        this.playTime = 0
+
     }
 
     static resetGame(scene) {
