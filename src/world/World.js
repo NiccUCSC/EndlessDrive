@@ -16,6 +16,12 @@ class World {
     static playerEngineHealth = 0
     static playerWheelsHealth = 0
     static playTime = 0
+    static realPlayTime = 0
+
+    static target1miltime = 600   
+    static avgSpeed = 32
+    static pointMult = 1e6 / this.target1miltime / this.avgSpeed**2     // should take 10 mins at 1x speed at 32 m/s to reach 1000000 points
+    static fullScoreDist = 32 * 60                                      // should take 1 minute to reach full distance score at 1x speed
 
     static difficulty = 0
     static playSpeedMultiplier = 1
@@ -104,9 +110,27 @@ class World {
         })
 
         // SFX
-        this.bgMusic = playScene.sound.add('bgmusic', { loop: true })
+        
+        // this.bgMusic = playScene.sound.add('bgmusic', { loop: true })
+
+
+        this.bgMusics = [
+            playScene.sound.add('bgmusic', { loop: false, volume: 0.3 }),
+            playScene.sound.add('bgmusic1', { loop: false, volume: 0.3 }),
+        ]
+        this.bgMusic = Phaser.Utils.Array.GetRandom(this.bgMusics)
+        let playNextSong = () => {
+            let nextSongOptions = this.bgMusics.filter(music => music != this.bgMusic)
+            this.bgMusic = Phaser.Utils.Array.GetRandom(nextSongOptions)
+            this.bgMusic.once('complete', () => {
+                playNextSong()
+            })
+            this.bgMusic.play()
+        }
+        playNextSong()
+
         this.bgMusic.play()
-        this.bgMusic.setVolume(0.3)
+        // this.bgMusic.setVolume(0.3)
 
         this.slideSFXs = [
             playScene.sound.add('slide1', { loop: true }),
@@ -140,18 +164,19 @@ class World {
     static playFixEngine() {
         this.fixEngineSFX.play()
         this.fixEngineSFX.setRate(1)
-        this.fixEngineSFX.setVolume(0.4)
+        this.fixEngineSFX.setVolume(0.5)
     }
 
     static playFixTires() {
         this.fixTiresSFX.play()
         this.fixTiresSFX.setRate(1)
-        this.fixTiresSFX.setVolume(0.2)
+        this.fixTiresSFX.setVolume(0.15)
     }
 
     static preLoad() {
         RoadTile.init()
     }
+
 
     static physicsUpdate(time, dt) {
         let car = this.PlayScene.car
@@ -166,10 +191,13 @@ class World {
             this.gamePrevPos.x = playerPos.x
             this.gamePrevPos.y = playerPos.y
             this.gameDist += Math.sqrt(dx*dx + dy*dy)
-            this.gameScore += 1/256 *                                                // time
-                            (this.gameDist / 1000) *                                // distance
-                            this.carSpeedSquared *   // velocity^2
-                            this.PlayScene.worldTimeScale                           // timescale
+
+            this.gameScore += dt * this.pointMult *
+                            this.carSpeedSquared *                                      // velocity^2
+                            10 ** (this.PlayScene.worldTimeScale - 1) *                 // timescale
+                            Math.min(1, (this.gameDist / this.fullScoreDist) ** 2) *    // points from distance traveled
+                            this.playSpeedMultiplier ** 4                               // points from difficulty
+
         }
         this.UIScene.physicsUpdate(time, dt)
 
@@ -205,9 +233,12 @@ class World {
             break
         }
 
-        this.playTime += 1/64
-        this.PlayScene.worldTimeScale = this.playSpeedMultiplier * Math.min(1.5, 1 + this.playTime / 120)
-        console.log(this.PlayScene.worldTimeScale)
+
+        if (car.alive) {
+            this.playTime += 1/64                                   // simulated play time in scaled ticks
+            this.realPlayTime += 1/64/this.playSpeedMultiplier      // apprximate real play time in seconds
+            this.PlayScene.worldTimeScale = this.playSpeedMultiplier * (1 + Math.log(1 + this.realPlayTime / 180))
+        }
     }
 
     static update(time, dt) {
@@ -262,6 +293,7 @@ class World {
         this.gameStarted = true
         scene.worldTimeScale = this.playSpeedMultiplier
         this.playTime = 0
+        this.realPlayTime = 0
 
     }
 

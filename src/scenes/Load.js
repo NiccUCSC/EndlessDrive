@@ -25,6 +25,7 @@ class Load extends Phaser.Scene {
         // SFX
         this.load.path = './assets/sfx/'
         this.load.audio("bgmusic", "heavy-racing-151129.mp3")
+        this.load.audio("bgmusic1", "race-cars-phonk-gaming-music.mp3")
         this.load.audio("slide1", "rubber-tire-screech-8-202578.mp3")
         this.load.audio("slide2", "rubber-tire-screech-9-202582.mp3")
         this.load.audio("slide3", "rubber-tire-screech-3-202532.mp3")
@@ -71,7 +72,8 @@ class Load extends Phaser.Scene {
 
         this.load.spritesheet('numbers', 'numbers.png', { frameWidth: 16, frameHeight: 24 })
         this.load.spritesheet('letters', 'letters.png', { frameWidth: 16, frameHeight: 24 })
-        this.load.spritesheet('controls', 'controls.png', { frameWidth: 32, frameHeight: 24 })    }
+        this.load.spritesheet('controls', 'controls.png', { frameWidth: 32, frameHeight: 24 })    
+    }
 
     create() {
         // check for local storage browser support
