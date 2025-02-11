@@ -29,6 +29,8 @@ class Load extends Phaser.Scene {
         this.load.audio("slide2", "rubber-tire-screech-9-202582.mp3")
         this.load.audio("slide3", "rubber-tire-screech-3-202532.mp3")
         this.load.audio("copbonk", "car-door-shut-297266.mp3")
+        this.load.audio("fixengine", "fixEngine.mp3")
+        this.load.audio("fixtires", "fixTires.mp3")
 
         this.load.audio("carcrash", "crash-7075.mp3")
         this.load.audio("carexplode", "explosion-6055.mp3")

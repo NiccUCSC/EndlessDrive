@@ -119,7 +119,6 @@ class Play extends Phaser.Scene {
             break
         case values.Item | values.Car:
             item.obj.onCollect(car.obj)
-            break
         }
     }
 

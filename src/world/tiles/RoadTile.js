@@ -47,7 +47,7 @@ class RoadTile extends WorldTile {
         }
 
         let repairKitChance = World.randomGen.frac()
-        if ((x || y) && (type != "emptycliff") && repairKitChance < 0.15) {
+        if ((x || y) && (type != "emptycliff") && repairKitChance < 0.9) {
             console.log(type)
             let tx = World.randomGen.frac() * 10 - 5
             let ty = World.randomGen.frac() * 10 - 5

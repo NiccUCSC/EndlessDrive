@@ -84,7 +84,7 @@ class World {
         // SFX
         this.bgMusic = playScene.sound.add('bgmusic', { loop: true })
         this.bgMusic.play()
-        this.bgMusic.setVolume(0.1)
+        this.bgMusic.setVolume(0.3)
 
         this.slideSFXs = [
             playScene.sound.add('slide1', { loop: true }),
@@ -104,12 +104,27 @@ class World {
             playScene.sound.add('carcrash', { loop: false }),
             playScene.sound.add('carexplode', { loop: false }),
         ]
+
+        this.fixEngineSFX = playScene.sound.add('fixengine', { loop: false })
+        this.fixTiresSFX = playScene.sound.add('fixtires', { loop: false })
     }
     
 
     static playCopBonk() {
         this.copBonkSFX.play()
-        this.copBonkSFX.setVolume(0.1)
+        this.copBonkSFX.setVolume(0.3)
+    }
+
+    static playFixEngine() {
+        this.fixEngineSFX.play()
+        this.fixEngineSFX.setRate(1)
+        this.fixEngineSFX.setVolume(0.4)
+    }
+
+    static playFixTires() {
+        this.fixTiresSFX.play()
+        this.fixTiresSFX.setRate(1)
+        this.fixTiresSFX.setVolume(0.2)
     }
 
     static preLoad() {
@@ -138,7 +153,7 @@ class World {
 
         this.bgMusic.setRate(this.PlayScene.worldTimeScale)
         let skidPercent = car.skidPercent
-        let skidVolume = skidPercent ** 2 * 0.06
+        let skidVolume = skidPercent ** 2 * 0.18
 
         for (let sound of this.slideSFXs) {
             sound.setVolume(skidVolume)
@@ -160,7 +175,7 @@ class World {
     }
 
     static loadGame(scene) {
-        this.bgMusic.setVolume(0.1)
+        this.bgMusic.setVolume(0.3)
 
 
         this.gameID = generateGameID(5, 5)

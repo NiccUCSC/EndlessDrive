@@ -25,7 +25,7 @@ class Car extends Vehicle {
         })
         this.box2dBody.parent = this
 
-        this.steering = 0   // 1 = right, -1 = left, 0 = straigt
+        this.steering = 0           // 1 = right, -1 = left, 0 = straigt
         this.steeringRate = 12
         this.wheelSpeed = 0
         this.wheelAcc = 20

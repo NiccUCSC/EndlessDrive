@@ -19,5 +19,6 @@ class RepairKit extends Item {
         car.health = Math.min(car.health + 50, 100)
         console.log("COLLECTED REPAIR KIT")
         this.alive = false
+        World.playFixEngine()
     }
 }
