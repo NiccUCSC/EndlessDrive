@@ -99,6 +99,11 @@ class World {
         }
 
         this.copBonkSFX = playScene.sound.add('copbonk', { loop: false })
+
+        this.carCrashSFXs = [
+            playScene.sound.add('carcrash', { loop: false }),
+            playScene.sound.add('carexplode', { loop: false }),
+        ]
     }
     
 
@@ -148,7 +153,10 @@ class World {
     }
 
     static onGameOver() {
-        this.bgMusic.setVolume(0.01)
+        for (let sfx of this.carCrashSFXs) {
+            sfx.play()
+            sfx.setVolume(0.2)
+        }
     }
 
     static loadGame(scene) {

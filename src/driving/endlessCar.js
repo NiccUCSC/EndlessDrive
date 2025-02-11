@@ -36,7 +36,9 @@ class Car extends Vehicle {
         this.groundAccKinetic = 55
 
         console.log(`Car at ${this.box2dBody.getPosition()}`)
-        this.onDeathCallback = () => WorldCamera.stopFollow()
+        this.onDeathCallback = () => {
+            this.scene.onGameOver()
+        }
 
     }
 

@@ -192,6 +192,7 @@ class Play extends Phaser.Scene {
     }
 
     onGameOver() {
+        WorldCamera.stopFollow()
         World.PlayScene.worldTimeScale *= 0.25
         World.onGameOver()
         console.log("GAME OVER")
