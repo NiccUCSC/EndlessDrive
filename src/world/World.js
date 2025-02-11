@@ -25,6 +25,7 @@ class World {
 
     static difficulty = 3
     static playSpeedMultiplier = 1
+    static difficultyMultipliers = [0.5, 0.75, 0.875, 1, 1.25]
 
     static bgMusic = null
 
@@ -124,7 +125,8 @@ class World {
         this.bgMusics0 = [this.bgMusics[3]]
         this.bgMusics1234 = [this.bgMusics[0], this.bgMusics[1], this.bgMusics[2]]
 
-        
+        this.playSpeedMultiplier = this.difficultyMultipliers[this.difficulty]
+
         this.playNextSong = () => {
             let songPool = null
             switch (this.difficulty) {
@@ -149,6 +151,7 @@ class World {
                 this.playNextSong()
             })
             this.bgMusic.play()
+            this.bgMusic.setRate(this.playSpeedMultiplier)
         }
         this.playNextSong()
 
@@ -239,24 +242,7 @@ class World {
         if (this.hardDifficulty.isDown)     this.difficulty = 3
         if (this.insaneDifficulty.isDown)   this.difficulty = 4
 
-        switch (this.difficulty) {
-        case 0:
-            this.playSpeedMultiplier = 0.5
-            break
-        case 1:
-            this.playSpeedMultiplier = 0.75
-            break
-        case 2:
-            this.playSpeedMultiplier = 0.875
-            break
-        case 3:
-            this.playSpeedMultiplier = 1
-            break
-        case 4: 
-            this.playSpeedMultiplier = 1.25
-            break
-        }
-
+        this.playSpeedMultiplier = this.difficultyMultipliers[this.difficulty]
 
         if (car.alive) {
             this.playTime += 1/64                                   // simulated play time in scaled ticks
