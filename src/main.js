@@ -1,6 +1,10 @@
 // Endless Runner: Driftopia Police Chase
 // Name: Nicolas Vaillancourt
 // Date: 02/10/2025
+// Hours: 60+
+// Used Box2d physics engine to develop a fixed time step physics system that is consistant across different frame rates
+// Developed a random infinite terrain generation system with automatic wall hitbox creation
+
 
 'use strict'
 
