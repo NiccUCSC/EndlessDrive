@@ -28,6 +28,7 @@ class Load extends Phaser.Scene {
         this.load.audio("slide1", "rubber-tire-screech-8-202578.mp3")
         this.load.audio("slide2", "rubber-tire-screech-9-202582.mp3")
         this.load.audio("slide3", "rubber-tire-screech-3-202532.mp3")
+        this.load.audio("copbonk", "car-door-shut-297266.mp3")
 
         // Play scene
         this.load.path = './assets/img/'

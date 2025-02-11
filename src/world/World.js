@@ -81,6 +81,7 @@ class World {
             this.timeTillRestart = this.restartDelay
         })
 
+        // SFX
         this.bgMusic = playScene.sound.add('bgmusic', { loop: true })
         this.bgMusic.play()
         this.bgMusic.setVolume(0.1)
@@ -91,20 +92,19 @@ class World {
             playScene.sound.add('slide3', { loop: true }),
         ]
 
-        for (let sound of this.slideSFXs) {
-            sound.play()
-            // sound.setVolume(0.01)
-            sound.setVolume(0)
+        for (let i = 0; i < this.slideSFXs.length; i++) {
+            this.slideSFXs[i].play()
+            this.slideSFXs[i].setVolume(0)
+            this.slideSFXs[i].setRate(0.3 + i / 80)
         }
-        // this.slide1SFX = 
-        // this.slide1SFX.play()
-        // this.slide1SFX.setVolume(0)
 
-        // this.slide2SFX = 
-        // this.slide2SFX.play()
-        // this.slide2SFX.setVolume(0)
+        this.copBonkSFX = playScene.sound.add('copbonk', { loop: false })
+    }
+    
 
-
+    static playCopBonk() {
+        this.copBonkSFX.play()
+        this.copBonkSFX.setVolume(0.1)
     }
 
     static preLoad() {
@@ -132,9 +132,8 @@ class World {
         this.UIScene.physicsUpdate(time, dt)
 
         this.bgMusic.setRate(this.PlayScene.worldTimeScale)
-        let skidPercent = car.alive ? car.skidPercent : 0
-        let skidVolume = skidPercent ** 2 * 0.05
-        console.log(car.isAlive, skidVolume)
+        let skidPercent = car.skidPercent
+        let skidVolume = skidPercent ** 2 * 0.06
 
         for (let sound of this.slideSFXs) {
             sound.setVolume(skidVolume)

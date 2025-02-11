@@ -115,6 +115,7 @@ class Play extends Phaser.Scene {
             cop.obj.impact(impactVelocity, "car")
             car.obj.impact(impactVelocity, "cop")
             car.obj.addCollide(cop.obj)
+            World.playCopBonk()
             break
         case values.Item | values.Car:
             item.obj.onCollect(car.obj)
