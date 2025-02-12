@@ -35,8 +35,6 @@ class Play extends Phaser.Scene {
         World.preLoad()
         World.loadGame(this)
 
-        // this.repairKit = new RepairKit(this, 5, 0)
-
         this.scene.launch('uiScene')
     }
 
@@ -50,15 +48,7 @@ class Play extends Phaser.Scene {
         const velocityA = bodyA.getLinearVelocity()
         const velocityB = bodyB.getLinearVelocity()
         const relativeVelocity = velocityA.clone().sub(velocityB)
-
-        // const manifold = contact.getManifold()
-        // const normal = manifold.localNormal
-        // // const impactVelocity = relativeVelocity.x * normal.x + relativeVelocity.y * normal.y
         const impactVelocity = Math.sqrt(relativeVelocity.x**2 + relativeVelocity.y**2)
-
-    
-        // // Calculate the impact velocity (dot product of relative velocity and contact normal)
-        // const impactVelocity = relativeVelocity.dot(normal)
 
         let getInstance = (type) => {
             if (objectA instanceof type) return {obj: objectA, fix: fixtureA}
@@ -74,28 +64,13 @@ class Play extends Phaser.Scene {
         let item = getInstance(Item)
         let key = !!tile * values.RoadTile | !!car * values.Car | !!cop * values.Cop | !!item * values.Item
 
-        // // segment 2
-        // let values = {}
-        // let instances = {}
-        // let types = [RoadTile, Car, Cop]
-        // let bitMask = 0x1
-        // let key = 0
-        // for (let type of types) {
-        //     values[type] = bitMask
-        //     instances[type] = getInstance(type)
-        //     key |= !!instances.type * bitMask
-        //     bitMask <<= 0x1
-        // }
-
         switch (key) {
         case values.RoadTile | values.Car:
             switch (tile.fix.name) {
             case "enterSensor":
-                // console.log(`CAR ENTER TILE <${tile.obj.worldPos[0]}, ${tile.obj.worldPos[1]}>`)
                 tile.obj.needsToGenerate = true
                 break
             case "wall":
-                // console.log("CAR HIT WALL")
                 car.obj.impact(impactVelocity, "wall")
                 break   
             }
@@ -105,13 +80,11 @@ class Play extends Phaser.Scene {
             case "enterSensor":
                 break
             case "wall":
-                // console.log("COP HIT WALL")
                 cop.obj.impact(impactVelocity, "wall")
                 break   
             }
             break
         case values.Cop | values.Car:
-            // console.log("COP HIT CAR")
             cop.obj.impact(impactVelocity, "car")
             car.obj.impact(impactVelocity, "cop")
             car.obj.addCollide(cop.obj)
@@ -142,7 +115,6 @@ class Play extends Phaser.Scene {
 
         switch (key) {
         case values.Cop | values.Car:
-            console.log("COP UNHIT CAR")
             car.obj.removeCollide(cop.obj)
             break
         }
@@ -153,7 +125,6 @@ class Play extends Phaser.Scene {
     }
 
     generateItem(x, y, type) {
-                // this.repairKit = new RepairKit(this, 5, 0)
         this.items.add(new type(World.PlayScene, x, y))
     }
 

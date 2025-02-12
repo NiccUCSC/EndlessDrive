@@ -323,7 +323,15 @@ class RoadTile extends WorldTile {
         }
     }
 
+    despawnCopsAndItems() {
+        for (let obj of [...this.scene.cops, ...this.scene.items]) {
+            let pos = obj.box2dBody.getPosition()
+            if (RoadTile.getTileAtWorld(pos.x, pos.y) == this) obj.destroy()
+        }
+    }
+
     destroy() {
+        this.despawnCopsAndItems()
         this.scene.world.destroyBody(this.box2dBody)
         this.box2dBody = null
         this.skidGraphics.destroy()

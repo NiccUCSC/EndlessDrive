@@ -111,15 +111,7 @@ class Cop extends Vehicle {
     }
 
     checkDead() {
-        let targetDist = 0
-        if (this.scene.car) {
-            let pos = this.box2dBody.getPosition()
-            let carPos = this.scene.car.box2dBody.getPosition()
-            let distToCar = carPos.clone().sub(pos)
-            targetDist = Math.sqrt(distToCar.x*distToCar.x + distToCar.y*distToCar.y)
-        }
-
-        if (this.health < 0 || targetDist > 96) {
+        if (this.health < 0) {
             this.destroy()
             return true
         }
