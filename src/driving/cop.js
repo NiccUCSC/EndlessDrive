@@ -44,6 +44,8 @@ class Cop extends Vehicle {
         this.turnRadius = 7.5
         this.groundAccStatic = 80
         this.groundAccKinetic = 55
+
+        this.rotation = World.randomGen.frac() * Math.PI * 2 * 1
     }
 
     physicsUpdate(time, dt) {

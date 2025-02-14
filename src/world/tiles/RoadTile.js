@@ -8,10 +8,15 @@ class RoadTile extends WorldTile {
         turn03:             [0, 0, 1, 1],
         turn04:             [1, 0, 0, 1],
         emptycliff:         [0, 0, 0, 0],
+        smoothTurn01:             [1, 1, 0, 0],
+        smoothTurn02:             [0, 1, 1, 0],
+        smoothTurn03:             [0, 0, 1, 1],
+        smoothTurn04:             [1, 0, 0, 1],
     }
 
     static types = ["intersection", "straight01", "straight02", 
-                    "turn01", "turn02", "turn03", "turn04", "emptycliff"]
+                    "turn01", "turn02", "turn03", "turn04", "emptycliff",
+                    "smoothTurn01", "smoothTurn02", "smoothTurn03", "smoothTurn04"]
     
     static spawnChances = {}    // contains the spawn chance for every segment
     
@@ -48,7 +53,6 @@ class RoadTile extends WorldTile {
 
         let repairKitChance = World.randomGen.frac()
         if ((x || y) && (type != "emptycliff") && repairKitChance < 0.3) {
-            console.log(type)
             let tx = World.randomGen.frac() * 10 - 5
             let ty = World.randomGen.frac() * 10 - 5
             let itemType = World.randomGen.frac() < 2/3 ? RepairKit : WheelRepair
@@ -62,11 +66,15 @@ class RoadTile extends WorldTile {
             "intersection": 5,
             "straight01": 10,
             "straight02": 10, 
-            "turn01": 5, 
-            "turn02": 5, 
-            "turn03": 5, 
-            "turn04": 5, 
+            "turn01": 4, 
+            "turn02": 4, 
+            "turn03": 4, 
+            "turn04": 4, 
             "emptycliff": 60,
+            "smoothTurn01": 1,
+            "smoothTurn02": 1,
+            "smoothTurn03": 1,
+            "smoothTurn04": 1,
         }
 
         this.copChances = {
@@ -78,6 +86,10 @@ class RoadTile extends WorldTile {
             "turn03": 0.1, 
             "turn04": 0.1, 
             "emptycliff": 0,
+            "smoothTurn01": 0.1,
+            "smoothTurn02": 0.1,
+            "smoothTurn03": 0.1,
+            "smoothTurn04": 0.1,
         }
 
         this.GenerateWallBoxes()
